@@ -33,5 +33,10 @@ namespace DiscordChatExporter.Models
             return channel.Name;
         }
 
+        public static string GetGuildName(this Guild guild)
+        {
+            return guild.Name;
+        }
+
     }
 }

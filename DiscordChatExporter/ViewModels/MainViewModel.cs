@@ -20,7 +20,7 @@ namespace DiscordChatExporter.ViewModels
         private readonly IMessageGroupService _messageGroupService;
         private readonly ICloneService _cloneService;
 
-        private readonly Dictionary<Guild, IReadOnlyList<Channel>> _guildChannelsMap;
+        private  Dictionary<Guild, IReadOnlyList<Channel>> _guildChannelsMap;
 
         private bool _isBusy;
         private string _token;
@@ -53,6 +53,12 @@ namespace DiscordChatExporter.ViewModels
                 Set(ref _token, value);
                 PullDataCommand.RaiseCanExecuteChanged();
             }
+        }
+
+
+        public Dictionary<Guild, IReadOnlyList<Channel>> GuildChannelMap
+        {
+            get => _guildChannelsMap;
         }
 
         public IReadOnlyList<Guild> AvailableGuilds
@@ -107,7 +113,7 @@ namespace DiscordChatExporter.ViewModels
             // Messages
             MessengerInstance.Register<StartCloneMessage>(this, m =>
             {
-                DoClone(m.Channel, m.Format, m.From, m.To, m.FromChannel, m.ToChannel);
+                DoClone(m.FromChannel, m.ToChannel);
             });
 
             // Defaults
@@ -174,10 +180,10 @@ namespace DiscordChatExporter.ViewModels
 
         private void ShowCloneSetup(Channel channel)
         {
-            MessengerInstance.Send(new ShowCloneSetupMessage(SelectedGuild, channel, AvailableChannels));
+            MessengerInstance.Send(new ShowCloneSetupMessage(SelectedGuild, channel, AvailableChannels, _guildChannelsMap));
         }
 
-        private async void DoClone(Channel channel, ExportFormat format, DateTime? from, DateTime? to, Channel fromChannel, Channel toChannel)
+        private async void DoClone(Channel fromChannel, Channel toChannel)
         {
             IsBusy = true;
 
@@ -187,18 +193,17 @@ namespace DiscordChatExporter.ViewModels
             try
             {
                 // Get messages
-                var messages = await _dataService.GetChannelMessagesAsync(token, fromChannel.Id, from, to);
+                var messages = await _dataService.GetChannelMessagesAsync(token, fromChannel.Id, null, null);
 
                 // Group them
                 var messageGroups = _messageGroupService.GroupMessages(messages);
 
                 // Create log
-                var log = new ChannelChatLog(SelectedGuild, channel, messageGroups, messages.Count);
+                var log = new ChannelChatLog(SelectedGuild, fromChannel, messageGroups, messages.Count);
 
-                var doodle = await _dataService.PublishMessage(token, toChannel.Id, "Poodles are real");
 
                 // Clone
-                await _cloneService.CloneAsync(log);
+                await _cloneService.CloneAsync(token, toChannel, log);
 
                 // Notify completion
                 MessengerInstance.Send(new ShowCloneDoneMessage());

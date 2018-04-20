@@ -15,60 +15,36 @@ namespace DiscordChatExporter.ViewModels
     {
         private readonly ISettingsService _settingsService;
 
-        private ExportFormat _format;
-        private DateTime? _from;
-        private DateTime? _to;
-
-        public Channel _fromChannel;
+        public Guild _toGuild;
         public Channel _toChannel;
-        public IReadOnlyList<Channel> _availableChannels;
+        private Dictionary<Guild, IReadOnlyList<Channel>> _guildChannelsMap;
 
         public Guild Guild { get; private set; }
-
         public Channel Channel { get; private set; }
 
+
+        public IReadOnlyList<Guild> AvailableGuilds {
+            get => _guildChannelsMap.Keys.ToArray();
+        }
+
         public IReadOnlyList<Channel> AvailableChannels {
-            get => _availableChannels;
-            set => Set(ref _availableChannels, value);
-        }
-
-        public Channel SelectedChannel
-        {
-            get => _toChannel;
-            set
-            {
-                Set(ref _toChannel, value);
-            }
-        }
-
-        public IReadOnlyList<ExportFormat> AvailableFormats { get; }
-
-        public ExportFormat SelectedFormat
-        {
-            get => _format;
-            set
-            {
-                Set(ref _format, value);
-            }
-        }
-
-        public DateTime? From
-        {
-            get => _from;
-            set => Set(ref _from, value);
-        }
-
-        public DateTime? To
-        {
-            get => _to;
-            set => Set(ref _to, value);
+            get => _guildChannelsMap[_toGuild];
         }
 
 
-        public Channel FromChannel
+
+        // TODO
+        public Dictionary<Guild, IReadOnlyList<Channel>> GuildChannelMap
         {
-            get => _fromChannel;
-            set => Set(ref _fromChannel, value);
+            get => _guildChannelsMap;
+            set => Set(ref _guildChannelsMap, value);
+        }
+
+
+        public Guild ToGuild
+        {
+            get => _toGuild;
+            set => Set(ref _toGuild, value);
         }
 
         public Channel ToChannel
@@ -84,9 +60,6 @@ namespace DiscordChatExporter.ViewModels
         {
             _settingsService = settingsService;
 
-            // Defaults
-            AvailableFormats = Enum.GetValues(typeof(ExportFormat)).Cast<ExportFormat>().ToArray();
-
             // Commands
 //            CloneCommand = new RelayCommand(Clone, () => FilePath.IsNotBlank());
             CloneCommand = new RelayCommand(Clone);
@@ -96,25 +69,15 @@ namespace DiscordChatExporter.ViewModels
             {
                 Guild = m.Guild;
                 Channel = m.Channel;
-
-                FromChannel = m.Channel;
-// TODO
-                ToChannel = m.Channel;
-
-                SelectedFormat = _settingsService.LastExportFormat;
-                From = null;
-                To = null;
-                AvailableChannels = m.AvailableChannels;
+                ToGuild = m.Guild;
+                GuildChannelMap = m.GuildChannelMap;
             });
         }
 
         private void Clone()
         {
-            // Save format
-            _settingsService.LastExportFormat = SelectedFormat;
-
-            // Start export
-            MessengerInstance.Send(new StartCloneMessage(Channel, SelectedFormat, From, To, FromChannel, ToChannel));
+            // Start clone
+            MessengerInstance.Send(new StartCloneMessage(Channel, ToChannel));
         }
     }
 }

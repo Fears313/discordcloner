@@ -9,10 +9,7 @@ namespace DiscordChatExporter.ViewModels
     {
         Guild Guild { get; }
         Channel Channel { get; }
-        IReadOnlyList<ExportFormat> AvailableFormats { get; }
-        ExportFormat SelectedFormat { get; set; }
-        DateTime? From { get; set; }
-        DateTime? To { get; set; }
+        Channel ToChannel { get; }
 
         RelayCommand CloneCommand { get; }
     }

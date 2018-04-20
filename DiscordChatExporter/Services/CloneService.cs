@@ -12,13 +12,15 @@ namespace DiscordChatExporter.Services
     public partial class CloneService : ICloneService
     {
         private readonly ISettingsService _settingsService;
+        private readonly IDataService _dataService;
 
-        public CloneService(ISettingsService settingsService)
+        public CloneService(ISettingsService settingsService, IDataService dataService)
         {
             _settingsService = settingsService;
+            _dataService = dataService;
         }
 
-        private async Task CloneAsTextAsync(ChannelChatLog log)
+        private async Task CloneAsTextAsync(string token, Channel toChannel, ChannelChatLog log)
         {
             // Chat log
             foreach (var group in log.MessageGroups)
@@ -32,6 +34,9 @@ namespace DiscordChatExporter.Services
                     if (message.Content.IsNotBlank())
                     {
                         var contentFormatted = FormatMessageContentText(message);
+
+                        var doodle = await _dataService.PublishMessage(token, toChannel.Id, contentFormatted);
+
                         Console.WriteLine("Have a message to clone " + message.Content);
                     }
 
@@ -45,9 +50,9 @@ namespace DiscordChatExporter.Services
             }
         }
 
-        public Task CloneAsync(ChannelChatLog channelChatLog)
+        public Task CloneAsync(string token, Channel toChannel, ChannelChatLog channelChatLog)
         {
-            return CloneAsTextAsync(channelChatLog);
+            return CloneAsTextAsync(token, toChannel, channelChatLog);
         }
     }
 
