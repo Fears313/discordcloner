@@ -1,34 +1,25 @@
 ﻿using DiscordChatExporter.Models
 using MaterialDesignThemes.Wpf
 
-UserControl "DiscordChatExporter.Views.ExportSetupDialog" {
-  DataContext: bind ExportSetupViewModel from $resource Container
+UserControl "DiscordChatExporter.Views.CloneSetupDialog" {
+  DataContext: bind CloneSetupViewModel from $resource Container
   Width: 325
 
   StackPanel {
-    // File path
-    TextBox {
-      Margin: [16, 16, 16, 8]
-      HintAssist.Hint: "Output file"
-      HintAssist.IsFloating: true
-      IsReadOnly: true
-      Text: bind FilePath
-            set [ UpdateSourceTrigger: PropertyChanged ]
-    }
 
-    // Format
+    // To Channel
     ComboBox {
       Margin: [16, 8, 16, 8]
-      HintAssist.Hint: "Export format"
+      HintAssist.Hint: "To Channel"
       HintAssist.IsFloating: true
       IsReadOnly: true
-      ItemsSource: bind AvailableFormats
-      SelectedItem: bind SelectedFormat
+      ItemsSource: bind AvailableChannels
+      SelectedItem: bind SelectedChannel
 
       ItemTemplate: DataTemplate {
         TextBlock {
           Text: bind
-                convert (ExportFormat f) => Extensions.GetDisplayName(f)
+                convert (Channel c) => Extensions.GetChannelName(c)
         }
       }
     }
@@ -58,23 +49,14 @@ UserControl "DiscordChatExporter.Views.ExportSetupDialog" {
     @StackPanelHorizontal {
       HorizontalAlignment: Right
 
-      // Browse
-      Button "BrowseButton" {
-        Margin: 8
-        Click: BrowseButton_Click
-        Content: "BROWSE"
-        Style: resource dyn "MaterialDesignFlatButton"
-      }
+      // Browse  TODO This should browse channels etc to clone to!
+      // Button "BrowseButton" {
+      // Margin: 8
+      // Click: BrowseButton_Click
+      // Content: "BROWSE"
+      // Style: resource dyn "MaterialDesignFlatButton"
+      // }
 
-      // Export
-      Button "ExportButton" {
-        Margin: 8
-        Click: ExportButton_Click
-        Command: bind ExportCommand
-        Content: "EXPORT"
-        IsDefault: true
-        Style: resource dyn "MaterialDesignFlatButton"
-      }
 	  // Clone
       Button "CloneButton" {
         Margin: 8

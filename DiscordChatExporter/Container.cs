@@ -17,13 +17,11 @@ namespace DiscordChatExporter
 
             // Services
             SimpleIoc.Default.Register<IDataService, DataService>();
-            SimpleIoc.Default.Register<IExportService, ExportService>();
+            SimpleIoc.Default.Register<ICloneService, CloneService>();
             SimpleIoc.Default.Register<IMessageGroupService, MessageGroupService>();
 
             // View models
             SimpleIoc.Default.Register<IErrorViewModel, ErrorViewModel>(true);
-            SimpleIoc.Default.Register<IExportDoneViewModel, ExportDoneViewModel>(true);
-            SimpleIoc.Default.Register<IExportSetupViewModel, ExportSetupViewModel>(true);
             SimpleIoc.Default.Register<ICloneDoneViewModel, CloneDoneViewModel>(true);
             SimpleIoc.Default.Register<ICloneSetupViewModel, CloneSetupViewModel>(true);
             SimpleIoc.Default.Register<IMainViewModel, MainViewModel>(true);
@@ -37,8 +35,6 @@ namespace DiscordChatExporter
         }
 
         public IErrorViewModel ErrorViewModel => ServiceLocator.Current.GetInstance<IErrorViewModel>();
-        public IExportDoneViewModel ExportDoneViewModel => ServiceLocator.Current.GetInstance<IExportDoneViewModel>();
-        public IExportSetupViewModel ExportSetupViewModel => ServiceLocator.Current.GetInstance<IExportSetupViewModel>();
         public ICloneDoneViewModel CloneDoneViewModel => ServiceLocator.Current.GetInstance<ICloneDoneViewModel>();
         public ICloneSetupViewModel CloneSetupViewModel => ServiceLocator.Current.GetInstance<ICloneSetupViewModel>();
         public IMainViewModel MainViewModel => ServiceLocator.Current.GetInstance<IMainViewModel>();

@@ -15,22 +15,29 @@ namespace DiscordChatExporter.ViewModels
     {
         private readonly ISettingsService _settingsService;
 
-        private string _filePath;
         private ExportFormat _format;
         private DateTime? _from;
         private DateTime? _to;
+
+        public Channel _fromChannel;
+        public Channel _toChannel;
+        public IReadOnlyList<Channel> _availableChannels;
 
         public Guild Guild { get; private set; }
 
         public Channel Channel { get; private set; }
 
-        public string FilePath
+        public IReadOnlyList<Channel> AvailableChannels {
+            get => _availableChannels;
+            set => Set(ref _availableChannels, value);
+        }
+
+        public Channel SelectedChannel
         {
-            get => _filePath;
+            get => _toChannel;
             set
             {
-                Set(ref _filePath, value);
-                CloneCommand.RaiseCanExecuteChanged();
+                Set(ref _toChannel, value);
             }
         }
 
@@ -42,11 +49,6 @@ namespace DiscordChatExporter.ViewModels
             set
             {
                 Set(ref _format, value);
-
-                // Replace extension in path
-                var newExt = value.GetFileExtension();
-                if (FilePath != null && !FilePath.EndsWith(newExt))
-                    FilePath = FilePath.SubstringUntilLast(".") + "." + newExt;
             }
         }
 
@@ -62,6 +64,19 @@ namespace DiscordChatExporter.ViewModels
             set => Set(ref _to, value);
         }
 
+
+        public Channel FromChannel
+        {
+            get => _fromChannel;
+            set => Set(ref _fromChannel, value);
+        }
+
+        public Channel ToChannel
+        {
+            get => _toChannel;
+            set => Set(ref _toChannel, value);
+        }
+
         // Commands
         public RelayCommand CloneCommand { get; }
 
@@ -73,18 +88,23 @@ namespace DiscordChatExporter.ViewModels
             AvailableFormats = Enum.GetValues(typeof(ExportFormat)).Cast<ExportFormat>().ToArray();
 
             // Commands
-            CloneCommand = new RelayCommand(Clone, () => FilePath.IsNotBlank());
+//            CloneCommand = new RelayCommand(Clone, () => FilePath.IsNotBlank());
+            CloneCommand = new RelayCommand(Clone);
 
             // Messages
-            MessengerInstance.Register<ShowExportSetupMessage>(this, m =>
+            MessengerInstance.Register<ShowCloneSetupMessage>(this, m =>
             {
                 Guild = m.Guild;
                 Channel = m.Channel;
+
+                FromChannel = m.Channel;
+// TODO
+                ToChannel = m.Channel;
+
                 SelectedFormat = _settingsService.LastExportFormat;
-                FilePath = $"{Guild} - {Channel}.{SelectedFormat.GetFileExtension()}"
-                    .Replace(Path.GetInvalidFileNameChars(), '_');
                 From = null;
                 To = null;
+                AvailableChannels = m.AvailableChannels;
             });
         }
 
@@ -94,7 +114,7 @@ namespace DiscordChatExporter.ViewModels
             _settingsService.LastExportFormat = SelectedFormat;
 
             // Start export
-            MessengerInstance.Send(new StartCloneMessage(Channel, FilePath, SelectedFormat, From, To));
+            MessengerInstance.Send(new StartCloneMessage(Channel, SelectedFormat, From, To, FromChannel, ToChannel));
         }
     }
 }

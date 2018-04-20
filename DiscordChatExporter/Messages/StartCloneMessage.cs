@@ -5,9 +5,11 @@ namespace DiscordChatExporter.Messages
 {
     public class StartCloneMessage
     {
-        public Channel Channel { get; }
+        public Channel FromChannel { get; }
 
-        public string FilePath { get; }
+        public Channel ToChannel { get; }
+
+        public Channel Channel { get; }
 
         public ExportFormat Format { get; }
 
@@ -15,11 +17,11 @@ namespace DiscordChatExporter.Messages
 
         public DateTime? To { get; }
 
-        public StartCloneMessage(Channel channel, string filePath, ExportFormat format,
-            DateTime? from, DateTime? to)
+        public StartCloneMessage(Channel channel, ExportFormat format, DateTime? from, DateTime? to, Channel fromChannel, Channel toChannel)
         {
             Channel = channel;
-            FilePath = filePath;
+            FromChannel = fromChannel;
+            ToChannel = toChannel;
             Format = format;
             From = from;
             To = to;

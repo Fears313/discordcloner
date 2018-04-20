@@ -33,6 +33,22 @@ namespace DiscordChatExporter.Services
             }
         }
 
+
+        private async Task<string> PostStringAsync(string url, HttpContent content)
+        {
+            using (var response = await _httpClient.PostAsync(url, content))
+            {
+                // Check status code
+                // We throw our own exception here because default one doesn't have status code
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpErrorStatusCodeException(response.StatusCode);
+
+                // Get content
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
+
+
         private async Task<IReadOnlyList<Role>> GetGuildRolesAsync(string token, string guildId)
         {
             // Form request url
@@ -81,6 +97,20 @@ namespace DiscordChatExporter.Services
             var channels = JArray.Parse(content).Select(ParseChannel).ToArray();
 
             return channels;
+        }
+
+        public async Task<Object> PublishMessage(string token, string channelId, string message)
+        {
+            // Form request url
+            var url = $"{ApiRoot}/channels/{channelId}/messages?token={token}";
+
+            // TODO Set up content
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("content", message)
+            });
+
+            return await PostStringAsync(url, content);
         }
 
         public async Task<IReadOnlyList<Channel>> GetGuildChannelsAsync(string token, string guildId)

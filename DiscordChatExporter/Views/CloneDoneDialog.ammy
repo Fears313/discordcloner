@@ -1,7 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf
 
-UserControl "DiscordChatExporter.Views.ExportDoneDialog" {
-  DataContext: bind ExportDoneViewModel from $resource Container
+UserControl "DiscordChatExporter.Views.CloneDoneDialog" {
+  DataContext: bind CloneDoneViewModel from $resource Container
   Width: 250
 
   StackPanel {
@@ -10,21 +10,12 @@ UserControl "DiscordChatExporter.Views.ExportDoneDialog" {
       Margin: 16
       FontSize: 16
       TextWrapping: WrapWithOverflow
-      Text: "Finished exporting chat log"
+      Text: "Finished cloning chat log"
     }
 
     // Buttons
     @StackPanelHorizontal {
       HorizontalAlignment: Right
-
-      // Open
-      Button "OpenButton" {
-        Margin: 8
-        Click: OpenButton_Click
-        Command: bind OpenCommand
-        Content: "OPEN IT"
-        Style: resource dyn "MaterialDesignFlatButton"
-      }
 
       // Dismiss
       Button {

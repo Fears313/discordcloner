@@ -27,5 +27,11 @@ namespace DiscordChatExporter.Models
 
             throw new NotImplementedException();
         }
+
+        public static string GetChannelName(this Channel channel)
+        {
+            return channel.Name;
+        }
+
     }
 }

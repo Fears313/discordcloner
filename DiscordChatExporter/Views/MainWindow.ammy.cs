@@ -16,10 +16,10 @@ namespace DiscordChatExporter.Views
             // Dialogs
             Messenger.Default.Register<ShowErrorMessage>(this,
                 m => DialogHost.Show(new ErrorDialog()).Forget());
-            Messenger.Default.Register<ShowExportDoneMessage>(this,
-                m => DialogHost.Show(new ExportDoneDialog()).Forget());
-            Messenger.Default.Register<ShowExportSetupMessage>(this,
-                m => DialogHost.Show(new ExportSetupDialog()).Forget());
+            Messenger.Default.Register<ShowCloneDoneMessage>(this,
+                m => DialogHost.Show(new CloneDoneDialog()).Forget());
+            Messenger.Default.Register<ShowCloneSetupMessage>(this,
+                m => DialogHost.Show(new CloneSetupDialog()).Forget());
             Messenger.Default.Register<ShowSettingsMessage>(this,
                 m => DialogHost.Show(new SettingsDialog()).Forget());
         }

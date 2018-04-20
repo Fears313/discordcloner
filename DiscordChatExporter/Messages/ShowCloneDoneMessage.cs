@@ -2,11 +2,8 @@
 {
     public class ShowCloneDoneMessage
     {
-        public string FilePath { get; }
-
-        public ShowCloneDoneMessage(string filePath)
+        public ShowCloneDoneMessage()
         {
-            FilePath = filePath;
         }
     }
 }

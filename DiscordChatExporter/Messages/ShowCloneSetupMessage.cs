@@ -1,4 +1,5 @@
 ﻿using DiscordChatExporter.Models;
+using System.Collections.Generic;
 
 namespace DiscordChatExporter.Messages
 {
@@ -8,10 +9,13 @@ namespace DiscordChatExporter.Messages
 
         public Channel Channel { get; }
 
-        public ShowCloneSetupMessage(Guild guild, Channel channel)
+        public IReadOnlyList<Channel> AvailableChannels { get; }
+
+        public ShowCloneSetupMessage(Guild guild, Channel channel, IReadOnlyList<Channel> availableChannels)
         {
             Guild = guild;
             Channel = channel;
+            AvailableChannels = availableChannels;
         }
     }
 }

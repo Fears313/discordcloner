@@ -18,7 +18,7 @@ namespace DiscordChatExporter.ViewModels
         private readonly ISettingsService _settingsService;
         private readonly IDataService _dataService;
         private readonly IMessageGroupService _messageGroupService;
-        private readonly IExportService _exportService;
+        private readonly ICloneService _cloneService;
 
         private readonly Dictionary<Guild, IReadOnlyList<Channel>> _guildChannelsMap;
 
@@ -36,7 +36,7 @@ namespace DiscordChatExporter.ViewModels
             {
                 Set(ref _isBusy, value);
                 PullDataCommand.RaiseCanExecuteChanged();
-                ShowExportSetupCommand.RaiseCanExecuteChanged();
+                ShowCloneSetupCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -72,7 +72,7 @@ namespace DiscordChatExporter.ViewModels
             {
                 Set(ref _selectedGuild, value);
                 AvailableChannels = value != null ? _guildChannelsMap[value] : new Channel[0];
-                ShowExportSetupCommand.RaiseCanExecuteChanged();
+                ShowCloneSetupCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -86,14 +86,15 @@ namespace DiscordChatExporter.ViewModels
         public RelayCommand ShowSettingsCommand { get; }
         public RelayCommand ShowAboutCommand { get; }
         public RelayCommand<Channel> ShowExportSetupCommand { get; }
+        public RelayCommand<Channel> ShowCloneSetupCommand { get; }
 
         public MainViewModel(ISettingsService settingsService, IDataService dataService,
-            IMessageGroupService messageGroupService, IExportService exportService)
+            IMessageGroupService messageGroupService, ICloneService cloneService)
         {
             _settingsService = settingsService;
             _dataService = dataService;
             _messageGroupService = messageGroupService;
-            _exportService = exportService;
+            _cloneService = cloneService;
 
             _guildChannelsMap = new Dictionary<Guild, IReadOnlyList<Channel>>();
 
@@ -101,20 +102,12 @@ namespace DiscordChatExporter.ViewModels
             PullDataCommand = new RelayCommand(PullData, () => Token.IsNotBlank() && !IsBusy);
             ShowSettingsCommand = new RelayCommand(ShowSettings);
             ShowAboutCommand = new RelayCommand(ShowAbout);
-            ShowExportSetupCommand = new RelayCommand<Channel>(ShowExportSetup, _ => !IsBusy);
-
-            // Messages
-            MessengerInstance.Register<StartExportMessage>(this, m =>
-            {
-                 Export(m.Channel, m.FilePath, m.Format, m.From, m.To);
-                              
-            });
+            ShowCloneSetupCommand = new RelayCommand<Channel>(ShowCloneSetup, _ => !IsBusy);
 
             // Messages
             MessengerInstance.Register<StartCloneMessage>(this, m =>
             {
-                Export(m.Channel, m.FilePath, m.Format, m.From, m.To);
-
+                DoClone(m.Channel, m.Format, m.From, m.To, m.FromChannel, m.ToChannel);
             });
 
             // Defaults
@@ -155,8 +148,8 @@ namespace DiscordChatExporter.ViewModels
             }
             catch (HttpErrorStatusCodeException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
             {
-                const string message = "Unauthorized to perform request. Make sure token is valid.";
-                MessengerInstance.Send(new ShowErrorMessage(message));
+                //const string message = "Unauthorized to perform request. Make sure token is valid.";
+                //MessengerInstance.Send(new ShowErrorMessage(message));
             }
             catch (HttpErrorStatusCodeException ex) when (ex.StatusCode == HttpStatusCode.Forbidden)
             {
@@ -179,61 +172,22 @@ namespace DiscordChatExporter.ViewModels
             Process.Start("https://github.com/Tyrrrz/DiscordChatExporter");
         }
 
-        private void ShowExportSetup(Channel channel)
-        {
-            MessengerInstance.Send(new ShowExportSetupMessage(SelectedGuild, channel));
-        }
-
-        private async void Export(Channel channel, string filePath, ExportFormat format, DateTime? from, DateTime? to)
-        {
-            IsBusy = true;
-
-            // Get last used token
-            var token = _settingsService.LastToken;
-
-            
-            try
-            {
-                // Get messages
-                var messages = await _dataService.GetChannelMessagesAsync(token, channel.Id, from, to);
-
-                // Group them
-                var messageGroups = _messageGroupService.GroupMessages(messages);
-
-                // Create log
-                var log = new ChannelChatLog(SelectedGuild, channel, messageGroups, messages.Count);
-
-                // Export
-                await _exportService.ExportAsync(format, filePath, log);
-
-                // Notify completion
-                MessengerInstance.Send(new ShowExportDoneMessage(filePath));
-            }
-            catch (HttpErrorStatusCodeException ex) when (ex.StatusCode == HttpStatusCode.Forbidden)
-            {
-                const string message = "Forbidden to view messages in that channel.";
-                MessengerInstance.Send(new ShowErrorMessage(message));
-            }
-
-            IsBusy = false;
-        }
         private void ShowCloneSetup(Channel channel)
         {
-            MessengerInstance.Send(new ShowCloneSetupMessage(SelectedGuild, channel));
+            MessengerInstance.Send(new ShowCloneSetupMessage(SelectedGuild, channel, AvailableChannels));
         }
 
-        private async void Clone(Channel channel, string filePath, ExportFormat format, DateTime? from, DateTime? to)
+        private async void DoClone(Channel channel, ExportFormat format, DateTime? from, DateTime? to, Channel fromChannel, Channel toChannel)
         {
             IsBusy = true;
 
             // Get last used token
             var token = _settingsService.LastToken;
 
-
             try
             {
                 // Get messages
-                var messages = await _dataService.GetChannelMessagesAsync(token, channel.Id, from, to);
+                var messages = await _dataService.GetChannelMessagesAsync(token, fromChannel.Id, from, to);
 
                 // Group them
                 var messageGroups = _messageGroupService.GroupMessages(messages);
@@ -241,19 +195,27 @@ namespace DiscordChatExporter.ViewModels
                 // Create log
                 var log = new ChannelChatLog(SelectedGuild, channel, messageGroups, messages.Count);
 
-                // Export
-                await _exportService.ExportAsync(format, filePath, log);
+                var doodle = await _dataService.PublishMessage(token, toChannel.Id, "Poodles are real");
+
+                // Clone
+                await _cloneService.CloneAsync(log);
 
                 // Notify completion
-                MessengerInstance.Send(new ShowCloneDoneMessage(filePath));
+                MessengerInstance.Send(new ShowCloneDoneMessage());
             }
             catch (HttpErrorStatusCodeException ex) when (ex.StatusCode == HttpStatusCode.Forbidden)
             {
                 const string message = "Forbidden to view messages in that channel.";
                 MessengerInstance.Send(new ShowErrorMessage(message));
             }
+            catch (HttpErrorStatusCodeException ex) when (ex.StatusCode == HttpStatusCode.BadRequest)
+            {
+                const string message = "Invalid request.";
+                MessengerInstance.Send(new ShowErrorMessage(message));
+            }
 
             IsBusy = false;
         }
+
     }
 }

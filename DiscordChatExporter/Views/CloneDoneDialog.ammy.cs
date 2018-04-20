@@ -3,9 +3,9 @@ using MaterialDesignThemes.Wpf;
 
 namespace DiscordChatExporter.Views
 {
-    public partial class ExportDoneDialog
+    public partial class CloneDoneDialog
     {
-        public ExportDoneDialog()
+        public CloneDoneDialog()
         {
             InitializeComponent();
         }

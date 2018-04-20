@@ -3,8 +3,8 @@ using DiscordChatExporter.Models;
 
 namespace DiscordChatExporter.Services
 {
-    public interface IExportService
+    public interface ICloneService
     {
-        Task ExportAsync(ExportFormat format, string filePath, ChannelChatLog log);
+        Task CloneAsync(ChannelChatLog log);
     }
 }
