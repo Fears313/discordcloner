@@ -17,35 +17,32 @@ namespace DiscordChatCloner.ViewModels
 
         public Guild _toGuild;
         public Channel _toChannel;
-        private Dictionary<Guild, IReadOnlyList<Channel>> _guildChannelsMap;
+        public Dictionary<Guild, IReadOnlyList<Channel>> _guildChannelMap;
         private int _pollingFrequency;
+
+        private IReadOnlyList<Channel> _availableChannels;
 
         public Guild Guild { get; private set; }
         public Channel Channel { get; private set; }
 
 
         public IReadOnlyList<Guild> AvailableGuilds {
-            get => _guildChannelsMap.Keys.ToArray();
+            get => _guildChannelMap.Keys.ToArray();
         }
 
-        public IReadOnlyList<Channel> AvailableChannels {
-            get => _toGuild == null ? null : _guildChannelsMap[_toGuild];
-        }
-
-
-
-        // TODO
-        public Dictionary<Guild, IReadOnlyList<Channel>> GuildChannelMap
+        public IReadOnlyList<Channel> AvailableChannels
         {
-            get => _guildChannelsMap;
-            set => Set(ref _guildChannelsMap, value);
+            get => _availableChannels;
+            set => Set(ref _availableChannels, value);
         }
-
 
         public Guild ToGuild
         {
             get => _toGuild;
-            set => Set(ref _toGuild, value);
+            set {
+                Set(ref _toGuild, value);
+                AvailableChannels = _toGuild == null ? null : _guildChannelMap[_toGuild];
+            }
         }
 
         public Channel ToChannel
@@ -53,7 +50,6 @@ namespace DiscordChatCloner.ViewModels
             get => _toChannel;
             set => Set(ref _toChannel, value);
         }
-
 
         public int PollingFrequency
         {
@@ -76,8 +72,7 @@ namespace DiscordChatCloner.ViewModels
             {
                 Guild = m.Guild;
                 Channel = m.Channel;
-                //ToGuild = m.Guild;
-                GuildChannelMap = m.GuildChannelMap;
+                _guildChannelMap = m.GuildChannelMap;
                 PollingFrequency = _settingsService.PollingFrequency;
             });
         }
