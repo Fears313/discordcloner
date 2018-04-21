@@ -1,0 +1,29 @@
+﻿using MaterialDesignThemes.Wpf
+
+UserControl "DiscordChatCloner.Views.CloneDoneDialog" {
+  DataContext: bind CloneDoneViewModel from $resource Container
+  Width: 250
+
+  StackPanel {
+    // Message
+    TextBlock {
+      Margin: 16
+      FontSize: 16
+      TextWrapping: WrapWithOverflow
+      Text: "Finished cloning chat log"
+    }
+
+    // Buttons
+    @StackPanelHorizontal {
+      HorizontalAlignment: Right
+
+      // Dismiss
+      Button {
+        Margin: 8
+        Command: DialogHost.CloseDialogCommand
+        Content: "DISMISS"
+        Style: resource dyn "MaterialDesignFlatButton"
+      }
+    }
+  }
+}

@@ -1,0 +1,80 @@
+﻿using DiscordChatCloner.Models
+using MaterialDesignThemes.Wpf
+
+UserControl "DiscordChatCloner.Views.CloneSetupDialog" {
+  DataContext: bind CloneSetupViewModel from $resource Container
+  Width: 325
+
+  StackPanel {
+
+    // To Guild
+    ComboBox {
+      Margin: [16, 8, 16, 8]
+      HintAssist.Hint: "To Guild"
+      HintAssist.IsFloating: true
+      IsReadOnly: true
+      ItemsSource: bind AvailableGuilds
+      SelectedItem: bind ToGuild
+
+      ItemTemplate: DataTemplate {
+        TextBlock {
+          Text: bind
+                convert (Guild g) => Extensions.GetGuildName(g)
+        }
+      }
+    }
+
+
+    // To Channel
+    ComboBox {
+      Margin: [16, 8, 16, 8]
+      HintAssist.Hint: "To Channel"
+      HintAssist.IsFloating: true
+      IsReadOnly: true
+      ItemsSource: bind AvailableChannels
+      SelectedItem: bind ToChannel
+
+      ItemTemplate: DataTemplate {
+        TextBlock {
+          Text: bind
+                convert (Channel c) => Extensions.GetChannelName(c)
+        }
+      }
+    }
+
+	// Polling frequency (number input default to something relevant and validate not too often)
+	TextBox "PollingFrequencyTextBox" {
+        Margin: [16, 8, 16, 8]
+		HintAssist.Hint: "Polling Frequency (ms)"
+        HintAssist.IsFloating: true
+		Text: bind PollingFrequency
+			set [ UpdateSourceTrigger: PropertyChanged ]
+//		TextFieldAssist.DecorationVisibility: Hidden
+//		TextFieldAssist.TextBoxViewMargin: [0, 0, 2, 0]
+	}
+
+
+    // Buttons
+    @StackPanelHorizontal {
+      HorizontalAlignment: Right
+
+	  // Clone
+      Button "CloneButton" {
+        Margin: 8
+        Click: CloneButton_Click
+        Command: bind CloneCommand
+        Content: "CLONE"
+        IsDefault: true
+        Style: resource dyn "MaterialDesignFlatButton"
+      }
+
+      // Cancel
+      Button {
+        Margin: 8
+        Command: DialogHost.CloseDialogCommand
+        Content: "CANCEL"
+        Style: resource dyn "MaterialDesignFlatButton"
+      }
+    }
+  }
+}
