@@ -9,10 +9,13 @@ namespace DiscordChatExporter.Messages
 
         public Channel ToChannel { get; }
 
-        public StartCloneMessage(Channel fromChannel, Channel toChannel)
+        public int PollingFrequency { get; }
+
+        public StartCloneMessage(Channel fromChannel, Channel toChannel, int pollingFrequency)
         {
             FromChannel = fromChannel;
             ToChannel = toChannel;
+            PollingFrequency = pollingFrequency;
         }
     }
 }

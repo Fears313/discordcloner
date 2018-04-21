@@ -18,6 +18,7 @@ namespace DiscordChatExporter.ViewModels
         public Guild _toGuild;
         public Channel _toChannel;
         private Dictionary<Guild, IReadOnlyList<Channel>> _guildChannelsMap;
+        private int _pollingFrequency;
 
         public Guild Guild { get; private set; }
         public Channel Channel { get; private set; }
@@ -53,6 +54,13 @@ namespace DiscordChatExporter.ViewModels
             set => Set(ref _toChannel, value);
         }
 
+
+        public int PollingFrequency
+        {
+            get => _pollingFrequency;
+            set => Set(ref _pollingFrequency, value);
+        }
+
         // Commands
         public RelayCommand CloneCommand { get; }
 
@@ -71,13 +79,14 @@ namespace DiscordChatExporter.ViewModels
                 Channel = m.Channel;
                 ToGuild = m.Guild;
                 GuildChannelMap = m.GuildChannelMap;
+                PollingFrequency = 20000;
             });
         }
 
         private void Clone()
         {
             // Start clone
-            MessengerInstance.Send(new StartCloneMessage(Channel, ToChannel));
+            MessengerInstance.Send(new StartCloneMessage(Channel, ToChannel, PollingFrequency));
         }
     }
 }

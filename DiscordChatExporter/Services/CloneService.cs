@@ -15,7 +15,6 @@ namespace DiscordChatExporter.Services
     {
         private readonly ISettingsService _settingsService;
         private readonly IDataService _dataService;
-
         private System.Timers.Timer aTimer;
 
         public CloneService(ISettingsService settingsService, IDataService dataService)
@@ -24,11 +23,10 @@ namespace DiscordChatExporter.Services
             _dataService = dataService;
         }
 
-
-        private async Task StartCloning(string token, Channel fromChannel, Channel toChannel)
+        public async Task CloneAsync(string token, Channel fromChannel, Channel toChannel, int pollingFrequency)
         {
             // Create a timer with a two second interval.
-            aTimer = new System.Timers.Timer(1000 * 2);
+            aTimer = new System.Timers.Timer(pollingFrequency);
             aTimer.AutoReset = true;
 
             var testMsgs = await _dataService.GetChannelMessagesAsync(token, fromChannel.Id, null);
@@ -44,15 +42,11 @@ namespace DiscordChatExporter.Services
                     lastMessageId = msg.Id;
                 }
             };
-
             aTimer.Enabled = true;
+
+            // TODO we just pause then die here.  - where is this run form?
             Thread.Sleep(100000);
             aTimer.Stop();
-        }
-
-        public Task CloneAsync(string token, Channel fromChannel, Channel toChannel)
-        {
-            return StartCloning(token, fromChannel, toChannel);
         }
     }
 

@@ -42,38 +42,21 @@ UserControl "DiscordChatExporter.Views.CloneSetupDialog" {
       }
     }
 
-    // Date range
-    Grid {
-      #TwoColumns("*", "*")
-
-      DatePicker {
-        #Cell(0, 0)
-        Margin: [16, 20, 8, 8]
-        HintAssist.Hint: "From (optional)"
+	// Polling frequency (number input default to something relevant and validate not too often)
+	TextBox "PollingFrequencyTextBox" {
+        Margin: [16, 8, 16, 8]
+		HintAssist.Hint: "Polling Frequency (ms)"
         HintAssist.IsFloating: true
-        SelectedDate: bind From
-      }
+		Text: bind PollingFrequency
+			set [ UpdateSourceTrigger: PropertyChanged ]
+//		TextFieldAssist.DecorationVisibility: Hidden
+//		TextFieldAssist.TextBoxViewMargin: [0, 0, 2, 0]
+	}
 
-      DatePicker {
-        #Cell(0, 1)
-        Margin: [8, 20, 16, 8]
-        HintAssist.Hint: "To (optional)"
-        HintAssist.IsFloating: true
-        SelectedDate: bind To
-      }
-    }
 
     // Buttons
     @StackPanelHorizontal {
       HorizontalAlignment: Right
-
-      // Browse  TODO This should browse channels etc to clone to!
-      // Button "BrowseButton" {
-      // Margin: 8
-      // Click: BrowseButton_Click
-      // Content: "BROWSE"
-      // Style: resource dyn "MaterialDesignFlatButton"
-      // }
 
 	  // Clone
       Button "CloneButton" {

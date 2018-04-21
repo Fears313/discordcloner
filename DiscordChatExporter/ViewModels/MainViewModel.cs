@@ -113,12 +113,13 @@ namespace DiscordChatExporter.ViewModels
             // Messages
             MessengerInstance.Register<StartCloneMessage>(this, m =>
             {
-                DoClone(m.FromChannel, m.ToChannel);
+                DoClone(m.FromChannel, m.ToChannel, m.PollingFrequency);
             });
 
             // Defaults
             _token = _settingsService.LastToken;
         }
+
 
         private async void PullData()
         {
@@ -183,7 +184,7 @@ namespace DiscordChatExporter.ViewModels
             MessengerInstance.Send(new ShowCloneSetupMessage(SelectedGuild, channel, AvailableChannels, _guildChannelsMap));
         }
 
-        private async void DoClone(Channel fromChannel, Channel toChannel)
+        private async void DoClone(Channel fromChannel, Channel toChannel, int pollingFrequency)
         {
             IsBusy = true;
 
@@ -202,8 +203,10 @@ namespace DiscordChatExporter.ViewModels
                 var log = new ChannelChatLog(SelectedGuild, fromChannel, messageGroups, messages.Count);
 
 
-                // Clone
-                await _cloneService.CloneAsync(token, fromChannel, toChannel);
+                // Clone await  We need to change things a lot from here down.  
+                _cloneService.CloneAsync(token, fromChannel, toChannel, pollingFrequency);
+
+
 
                 // Notify completion
                 MessengerInstance.Send(new ShowCloneDoneMessage());
