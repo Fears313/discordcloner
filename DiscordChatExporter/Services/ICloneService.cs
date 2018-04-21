@@ -5,6 +5,6 @@ namespace DiscordChatExporter.Services
 {
     public interface ICloneService
     {
-        Task CloneAsync(string token, Channel toChannel, ChannelChatLog log);
+        Task CloneAsync(string token, Channel fromoChannel, Channel toChannel);
     }
 }

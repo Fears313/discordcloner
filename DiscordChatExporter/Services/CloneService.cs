@@ -3,7 +3,9 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using DiscordChatExporter.Models;
 using Tyrrrz.Extensions;
 
@@ -14,45 +16,43 @@ namespace DiscordChatExporter.Services
         private readonly ISettingsService _settingsService;
         private readonly IDataService _dataService;
 
+        private System.Timers.Timer aTimer;
+
         public CloneService(ISettingsService settingsService, IDataService dataService)
         {
             _settingsService = settingsService;
             _dataService = dataService;
         }
 
-        private async Task CloneAsTextAsync(string token, Channel toChannel, ChannelChatLog log)
+
+        private async Task StartCloning(string token, Channel fromChannel, Channel toChannel)
         {
-            // Chat log
-            foreach (var group in log.MessageGroups)
-            {
-                var timeStampFormatted = group.TimeStamp.ToString(_settingsService.DateFormat);
+            // Create a timer with a two second interval.
+            aTimer = new System.Timers.Timer(1000 * 2);
+            aTimer.AutoReset = true;
 
-                // Messages
-                foreach (var message in group.Messages)
+            var testMsgs = await _dataService.GetChannelMessagesAsync(token, fromChannel.Id, null);
+            var lastMessageId = testMsgs[0].Id;
+
+            // Hook up the Elapsed event for the timer. 
+            aTimer.Elapsed += async (s, e) => {
+                Console.WriteLine("The Elapsed event was raised at {0:HH:mm:ss.fff}", e.SignalTime);
+                var messages = await _dataService.GetChannelMessagesAsync(token, fromChannel.Id, lastMessageId);
+                foreach (var msg in messages)
                 {
-                    // Content
-                    if (message.Content.IsNotBlank())
-                    {
-                        var contentFormatted = FormatMessageContentText(message);
-
-                        var doodle = await _dataService.PublishMessage(token, toChannel.Id, contentFormatted);
-
-                        Console.WriteLine("Have a message to clone " + message.Content);
-                    }
-
-                    // Attachments
-                    foreach (var attachment in message.Attachments)
-                    {
-                       Console.WriteLine("Have an attachment " + attachment.Url);
-                    }
+                    var newMessage = _dataService.PublishStringAsync(token, toChannel.Id, msg.Content);
+                    lastMessageId = msg.Id;
                 }
+            };
 
-            }
+            aTimer.Enabled = true;
+            Thread.Sleep(100000);
+            aTimer.Stop();
         }
 
-        public Task CloneAsync(string token, Channel toChannel, ChannelChatLog channelChatLog)
+        public Task CloneAsync(string token, Channel fromChannel, Channel toChannel)
         {
-            return CloneAsTextAsync(token, toChannel, channelChatLog);
+            return StartCloning(token, fromChannel, toChannel);
         }
     }
 

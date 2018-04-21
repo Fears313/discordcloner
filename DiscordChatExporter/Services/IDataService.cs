@@ -16,6 +16,10 @@ namespace DiscordChatExporter.Services
         Task<IReadOnlyList<Message>> GetChannelMessagesAsync(string token, string channelId,
             DateTime? from, DateTime? to);
 
-        Task<Object> PublishMessage(string token, string channelId, string message);
+        Task<IReadOnlyList<Message>> GetChannelMessagesAsync(string token, string channelId, string messageId);
+
+
+        Task<Object> PublishMessageAsync(string token, string channelId, Message message);
+        Task<Object> PublishStringAsync(string token, string channelId, string message);
     }
 }

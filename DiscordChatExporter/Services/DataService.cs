@@ -99,7 +99,12 @@ namespace DiscordChatExporter.Services
             return channels;
         }
 
-        public async Task<Object> PublishMessage(string token, string channelId, string message)
+        public async Task<Object> PublishMessageAsync(string token, string channelId, Message message)
+        {
+            return await PublishStringAsync(token, channelId, message.Content);
+        }
+
+        public async Task<Object> PublishStringAsync(string token, string channelId, string messageString)
         {
             // Form request url
             var url = $"{ApiRoot}/channels/{channelId}/messages?token={token}";
@@ -107,7 +112,7 @@ namespace DiscordChatExporter.Services
             // TODO Set up content
             var content = new FormUrlEncodedContent(new[]
             {
-                new KeyValuePair<string, string>("content", message)
+                new KeyValuePair<string, string>("content", messageString)
             });
 
             return await PostStringAsync(url, content);
@@ -181,6 +186,55 @@ namespace DiscordChatExporter.Services
 
             return result;
         }
+
+
+
+        public async Task<IReadOnlyList<Message>> GetChannelMessagesAsync(string token, string channelId, string messageId)
+        {
+            var result = new List<Message>();
+
+            // We are going backwards from last message to first
+            // collecting everything between them in batches
+            var afterId = messageId;
+            while (true)
+            {
+                // Form request url
+                var url = $"{ApiRoot}/channels/{channelId}/messages?token={token}&limit=1";
+
+                if (afterId.IsNotBlank())
+                {
+                    url += $"&after={afterId}";
+                }
+
+                // Get response
+                var content = await GetStringAsync(url);
+
+                // Parse
+                var messages = JArray.Parse(content).Select(j => ParseMessage(j, _roleCache, _channelCache));
+
+                // Add messages to list
+                string currentMessageId = null;
+                foreach (var message in messages)
+                {
+                    // Add message
+                    result.Add(message);
+                    currentMessageId = message.Id;
+                }
+
+                // If no messages - break
+                if (currentMessageId == null)
+                    break;
+
+                // Otherwise offset the next request
+                afterId = currentMessageId;
+            }
+
+            // Messages appear newest first, we need to reverse
+            result.Reverse();
+
+            return result;
+        }
+
 
         protected virtual void Dispose(bool disposing)
         {

@@ -203,7 +203,7 @@ namespace DiscordChatExporter.ViewModels
 
 
                 // Clone
-                await _cloneService.CloneAsync(token, toChannel, log);
+                await _cloneService.CloneAsync(token, fromChannel, toChannel);
 
                 // Notify completion
                 MessengerInstance.Send(new ShowCloneDoneMessage());
