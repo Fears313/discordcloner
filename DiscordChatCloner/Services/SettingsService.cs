@@ -1,5 +1,4 @@
-﻿using DiscordChatCloner.Models;
-using Tyrrrz.Settings;
+﻿using Tyrrrz.Settings;
 
 namespace DiscordChatCloner.Services
 {

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using DiscordChatCloner.Exceptions;
 using DiscordChatCloner.Messages;
 using DiscordChatCloner.Models;
@@ -25,9 +28,9 @@ namespace DiscordChatCloner.ViewModels
 
         private bool _isBusy;
         private string _token;
-        private IReadOnlyList<Guild> _availableGuilds;
-        private Guild _selectedGuild;
-        private IReadOnlyList<Channel> _availableChannels;
+        //private IReadOnlyList<Guild> _availableGuilds;
+        //private Guild _selectedGuild;
+        //private IReadOnlyList<Channel> _availableChannels;
         private ObservableCollection<Cloner> _availableCloners;
 
 
@@ -38,11 +41,13 @@ namespace DiscordChatCloner.ViewModels
             {
                 Set(ref _isBusy, value);
                 PullDataCommand.RaiseCanExecuteChanged();
-                ShowCloneSetupCommand.RaiseCanExecuteChanged();
+                //ShowCloneSetupCommand.RaiseCanExecuteChanged();
             }
         }
 
-        public bool IsDataAvailable => AvailableGuilds.NotNullAndAny();
+        public bool IsDataAvailable => true;
+
+        //public bool IsDataAvailable => _guildChannelsMap.NotNullAndAny();
 
         public string Token
         {
@@ -62,32 +67,32 @@ namespace DiscordChatCloner.ViewModels
             get => _guildChannelsMap;
         }
 
-        public IReadOnlyList<Guild> AvailableGuilds
-        {
-            get => _availableGuilds;
-            private set
-            {
-                Set(ref _availableGuilds, value);
-                RaisePropertyChanged(() => IsDataAvailable);
-            }
-        }
+        //public IReadOnlyList<Guild> AvailableGuilds
+        //{
+        //    get => _availableGuilds;
+        //    private set
+        //    {
+        //        Set(ref _availableGuilds, value);
+        //        RaisePropertyChanged(() => IsDataAvailable);
+        //    }
+        //}
 
-        public Guild SelectedGuild
-        {
-            get => _selectedGuild;
-            set
-            {
-                Set(ref _selectedGuild, value);
-                AvailableChannels = value != null ? _guildChannelsMap[value] : new Channel[0];
-                ShowCloneSetupCommand.RaiseCanExecuteChanged();
-            }
-        }
+        //public Guild SelectedGuild
+        //{
+        //    get => _selectedGuild;
+        //    set
+        //    {
+        //        Set(ref _selectedGuild, value);
+        //        AvailableChannels = value != null ? _guildChannelsMap[value] : new Channel[0];
+        //        ShowCloneSetupCommand.RaiseCanExecuteChanged();
+        //    }
+        //}
 
-        public IReadOnlyList<Channel> AvailableChannels
-        {
-            get => _availableChannels;
-            private set => Set(ref _availableChannels, value);
-        }
+        //public IReadOnlyList<Channel> AvailableChannels
+        //{
+        //    get => _availableChannels;
+        //    private set => Set(ref _availableChannels, value);
+        //}
 
         public ObservableCollection<Cloner> AvailableCloners
         {
@@ -120,26 +125,22 @@ namespace DiscordChatCloner.ViewModels
             PullDataCommand = new RelayCommand(PullData, () => Token.IsNotBlank() && !IsBusy);
             ShowSettingsCommand = new RelayCommand(ShowSettings);
             ShowAboutCommand = new RelayCommand(ShowAbout);
-            ShowCloneSetupCommand = new RelayCommand<Channel>(ShowCloneSetup, _ => !IsBusy);
+            //ShowCloneSetupCommand = new RelayCommand<Channel>(ShowCloneSetup, _ => !IsBusy);
             ShowClonerCreateCommand = new RelayCommand(ShowClonerCreate);
             ShowClonerEditCommand = new RelayCommand<Cloner>(ShowClonerEdit);
 
-            MessengerInstance.Register<CreateClonerMessage>(this, m => 
-            {
-                CreateCloner(m.FromGuild, m.FromChannel, m.ToGuild, m.ToChannel, m.PollingFrequency);
+            MessengerInstance.Register<CreateClonerMessage>(this, m => {
+                CreateCloner(m.Name, m.FromGuild, m.FromChannel, m.ToGuild, m.ToChannel, m.PollingFrequency);
             });
 
             // Messages
-            MessengerInstance.Register<StartCloneMessage>(this, m =>
-            {
-                DoClone(m.FromChannel, m.ToChannel, m.PollingFrequency);
-            });
-
+            //MessengerInstance.Register<StartCloneMessage>(this, m => {
+            //    DoClone(m.FromChannel, m.ToChannel, m.PollingFrequency);
+            //});
 
             // Messages
-            MessengerInstance.Register<StartClonerMessage>(this, m =>
-            {
-                DoClone(m.Cloner.FromChannel, m.Cloner.ToChannel, m.Cloner.PollingFrequency);
+            MessengerInstance.Register<StartClonerMessage>(this, m => {
+                DoClone(m.Cloner);
             });
 
             // Defaults
@@ -190,8 +191,8 @@ namespace DiscordChatCloner.ViewModels
                 MessengerInstance.Send(new ShowErrorMessage(message));
             }
 
-            AvailableGuilds = _guildChannelsMap.Keys.ToArray();
-            SelectedGuild = AvailableGuilds.FirstOrDefault();
+            //AvailableGuilds = _guildChannelsMap.Keys.ToArray();
+            //SelectedGuild = AvailableGuilds.FirstOrDefault();
             IsBusy = false;
         }
 
@@ -205,10 +206,10 @@ namespace DiscordChatCloner.ViewModels
             Process.Start("https://github.com/Tyrrrz/DiscordChatCloner");
         }
 
-        private void ShowCloneSetup(Channel channel)
-        {
-            MessengerInstance.Send(new ShowCloneSetupMessage(SelectedGuild, channel, _guildChannelsMap));
-        }
+        //private void ShowCloneSetup(Channel channel)
+        //{
+        //    MessengerInstance.Send(new ShowCloneSetupMessage(SelectedGuild, channel, _guildChannelsMap));
+        //}
 
         private void ShowClonerCreate()
         {
@@ -220,14 +221,14 @@ namespace DiscordChatCloner.ViewModels
             MessengerInstance.Send(new ShowClonerEditMessage(cloner));
         }
 
-        private async void CreateCloner(Guild fromGuild, Channel fromChannel, Guild toGuild, Channel toChannel, int pollingFrequency)
+        private async void CreateCloner(string name, Guild fromGuild, Channel fromChannel, Guild toGuild, Channel toChannel, int pollingFrequency)
         {
-            Cloner cloner = new Cloner("new", "My new one", fromGuild, fromChannel, toGuild, toChannel, pollingFrequency);
+            Cloner cloner = new Cloner("new", name, fromGuild, fromChannel, toGuild, toChannel, pollingFrequency);
             this.AvailableCloners.Add(cloner);
         }
 
 
-        private async void DoClone(Channel fromChannel, Channel toChannel, int pollingFrequency)
+        private async void DoClone(Cloner cloner)
         {
             IsBusy = true;
 
@@ -237,19 +238,23 @@ namespace DiscordChatCloner.ViewModels
             try
             {
                 // Get messages
-                var messages = await _dataService.GetChannelMessagesAsync(token, fromChannel.Id, null, null);
+                var messages = await _dataService.GetChannelMessagesAsync(token, cloner.FromChannel.Id, null, null);
 
                 // Group them
                 var messageGroups = _messageGroupService.GroupMessages(messages);
 
                 // Create log
-                var log = new ChannelChatLog(SelectedGuild, fromChannel, messageGroups, messages.Count);
+                //var log = new ChannelChatLog(SelectedGuild, fromChannel, messageGroups, messages.Count);
+                CreateWorker();
 
+                IDictionary<string, object> context = new Dictionary<string, object>();
+                context.Add("token", token);
+                context.Add("cloner", cloner);
+
+                cloneWorker.RunWorkerAsync(context);
 
                 // Clone await  We need to change things a lot from here down.  
-                await _cloneService.CloneAsync(token, fromChannel, toChannel, pollingFrequency);
-
-
+                //await _cloneService.CloneAsync(token, cloner, cloneWorker);
 
                 // Notify completion
                 MessengerInstance.Send(new ShowCloneDoneMessage());
@@ -268,5 +273,40 @@ namespace DiscordChatCloner.ViewModels
             IsBusy = false;
         }
 
+        private BackgroundWorker cloneWorker;
+
+        private async void StartCloningAsync(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker bgWorker = (BackgroundWorker) sender;
+            IDictionary<string, object> context = (IDictionary<string, object>)e.Argument;
+            string token = (string)context["token"];
+            Cloner cloner = (Cloner)context["cloner"];
+            bgWorker.ReportProgress(0, "Starting cloner: " + cloner.Name);
+
+            //await _cloneService.CloneAsync(token, cloner, bgWorker);
+            _cloneService.Clone(token, cloner, bgWorker);
+
+            bgWorker.ReportProgress(100, "Finishing - " + cloner.Name);
+        }
+
+
+        private void CreateWorker()
+        {
+            cloneWorker = new BackgroundWorker();
+            cloneWorker.WorkerReportsProgress = true;
+            cloneWorker.DoWork += StartCloningAsync;
+            cloneWorker.ProgressChanged += worker_ProgressChanged;
+            cloneWorker.RunWorkerCompleted += worker_RunWorkerCompleted;
+        }
+
+        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            Console.WriteLine("I have an update --- things are ok! - " + e.ProgressPercentage.ToString() + " and " + e.UserState);
+        }
+
+        void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Console.WriteLine("We are done here.  I tink we'll move on!!!");
+        }
     }
 }

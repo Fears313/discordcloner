@@ -12,13 +12,13 @@ namespace DiscordChatCloner.ViewModels
     {
         private readonly ISettingsService _settingsService;
 
+        public string _name;
         public Guild _fromGuild;
         public Channel _fromChannel;
         public Guild _toGuild;
         public Channel _toChannel;
         public Dictionary<Guild, IReadOnlyList<Channel>> _guildChannelMap;
         public int _pollingFrequency;
-
         private IReadOnlyList<Channel> _availableChannels;
 
         public IReadOnlyList<Guild> AvailableGuilds {
@@ -29,6 +29,12 @@ namespace DiscordChatCloner.ViewModels
         {
             get => _availableChannels;
             set => Set(ref _availableChannels, value);
+        }
+
+        public string Name
+        {
+            get => _name;
+            set => Set(ref _name, value);
         }
 
         public Guild FromGuild
@@ -88,7 +94,7 @@ namespace DiscordChatCloner.ViewModels
 
         private void CreateCloner()
         {
-            MessengerInstance.Send(new CreateClonerMessage(FromGuild, FromChannel, ToGuild, ToChannel, PollingFrequency));
+            MessengerInstance.Send(new CreateClonerMessage(Name, FromGuild, FromChannel, ToGuild, ToChannel, PollingFrequency));
         }
     }
 }

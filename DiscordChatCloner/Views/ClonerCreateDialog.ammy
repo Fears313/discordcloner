@@ -11,6 +11,14 @@ UserControl "DiscordChatCloner.Views.ClonerCreateDialog" {
       Content: "Create Cloner"
     }
 
+    TextBox { 
+      Margin: [16, 8, 16, 8]
+      HintAssist.Hint: "Name"
+      HintAssist.IsFloating: true
+      Text: bind Name
+		set [ UpdateSourceTrigger: PropertyChanged ]
+    }
+
     // From Guild
     ComboBox {
       Margin: [16, 8, 16, 8]
@@ -88,8 +96,6 @@ UserControl "DiscordChatCloner.Views.ClonerCreateDialog" {
         HintAssist.IsFloating: true
 		Text: bind PollingFrequency
 			set [ UpdateSourceTrigger: PropertyChanged ]
-//		TextFieldAssist.DecorationVisibility: Hidden
-//		TextFieldAssist.TextBoxViewMargin: [0, 0, 2, 0]
 	}
 
 

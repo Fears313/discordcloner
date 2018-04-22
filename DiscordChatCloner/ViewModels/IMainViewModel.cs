@@ -12,14 +12,14 @@ namespace DiscordChatCloner.ViewModels
 
         string Token { get; set; }
 
-        IReadOnlyList<Guild> AvailableGuilds { get; }
-        Guild SelectedGuild { get; set; }
-        IReadOnlyList<Channel> AvailableChannels { get; }
+        //IReadOnlyList<Guild> AvailableGuilds { get; }
+        //Guild SelectedGuild { get; set; }
+        //IReadOnlyList<Channel> AvailableChannels { get; }
         ObservableCollection<Cloner> AvailableCloners { get; }
 
         RelayCommand PullDataCommand { get; }
         RelayCommand ShowSettingsCommand { get; }
         RelayCommand ShowAboutCommand { get; }
-        RelayCommand<Channel> ShowCloneSetupCommand { get; }
+        //RelayCommand<Channel> ShowCloneSetupCommand { get; }
     }
 }
