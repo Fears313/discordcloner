@@ -15,18 +15,22 @@ namespace DiscordChatCloner.ViewModels
     {
         private readonly ISettingsService _settingsService;
 
+        private Boolean _running;
+
+        public Cloner Cloner { get; set; }
         public Guild FromGuild { get; set; }
         public Channel FromChannel { get; set; }
-
         public Guild ToGuild { get; set; }
         public Channel ToChannel { get; set; }
-
         public int PollingFrequency { get; set; }
 
-        public bool Status { get; set; }
+        public bool Running
+        {
+            get => _running;
+            set => Set(ref _running, value);
+        }
 
         // Commands
-        public RelayCommand CloneCommand { get; }
         public RelayCommand StartClonerCommand { get; }
         public RelayCommand StopClonerCommand { get; }
 
@@ -35,36 +39,32 @@ namespace DiscordChatCloner.ViewModels
             _settingsService = settingsService;
 
             // Commands
-            CloneCommand = new RelayCommand(Clone, () => ToChannel != null);
-            StartClonerCommand = new RelayCommand(StartCloner, () => Status == false);
-            StopClonerCommand = new RelayCommand(StopCloner, () => Status == true);
+            StartClonerCommand = new RelayCommand(StartCloner, () => Running == false);
+            StopClonerCommand = new RelayCommand(StopCloner, () => Running == true);
 
             // Messages
             MessengerInstance.Register<ShowClonerEditMessage>(this, m =>
             {
-                FromGuild = m.Cloner.FromGuild;
-                FromChannel = m.Cloner.FromChannel;
-                ToGuild = m.Cloner.ToGuild;
-                ToChannel = m.Cloner.ToChannel;
-                PollingFrequency = m.Cloner.PollingFrequency;
-                Status = m.Cloner.Running;
+                Cloner = m.Cloner;
+                FromGuild = Cloner.FromGuild;
+                FromChannel = Cloner.FromChannel;
+                ToGuild = Cloner.ToGuild;
+                ToChannel = Cloner.ToChannel;
+                PollingFrequency = Cloner.PollingFrequency;
+                Running = Cloner.Running;
             });
         }
 
         private void StartCloner()
         {
-            Status = true;
+            Running = true;
+            MessengerInstance.Send(new StartClonerMessage(Cloner));
         }
 
         private void StopCloner()
         {
-            Status = false;
-        }
-
-        private void Clone()
-        {
-            // Start clone
-            MessengerInstance.Send(new StartCloneMessage(FromChannel, ToChannel, PollingFrequency));
+            Running = false;
+            MessengerInstance.Send(new StopClonerMessage(Cloner));
         }
     }
 }

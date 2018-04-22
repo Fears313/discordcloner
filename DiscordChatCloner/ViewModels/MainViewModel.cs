@@ -114,15 +114,7 @@ namespace DiscordChatCloner.ViewModels
             _cloneService = cloneService;
 
             _guildChannelsMap = new Dictionary<Guild, IReadOnlyList<Channel>>();
-
-            AvailableCloners = new ObservableCollection<Cloner>()
-            {
-                new Cloner("1", "Cloner 1", null, null, null, null, 999),
-                new Cloner("2", "Cloner 2", null, null, null, null, 998),
-                new Cloner("3", "Cloner 3", null, null, null, null, 997),
-                new Cloner("4", "Cloner 4", null, null, null, null, 996)
-            };
-
+            AvailableCloners = new ObservableCollection<Cloner>();
 
             // Commands
             PullDataCommand = new RelayCommand(PullData, () => Token.IsNotBlank() && !IsBusy);
@@ -141,6 +133,13 @@ namespace DiscordChatCloner.ViewModels
             MessengerInstance.Register<StartCloneMessage>(this, m =>
             {
                 DoClone(m.FromChannel, m.ToChannel, m.PollingFrequency);
+            });
+
+
+            // Messages
+            MessengerInstance.Register<StartClonerMessage>(this, m =>
+            {
+                DoClone(m.Cloner.FromChannel, m.Cloner.ToChannel, m.Cloner.PollingFrequency);
             });
 
             // Defaults

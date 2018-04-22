@@ -67,8 +67,19 @@ UserControl "DiscordChatCloner.Views.ClonerEditDialog" {
         HintAssist.IsFloating: true
         IsReadOnly: true
 		Text: bind PollingFrequency
+          set [
+                Mode: OneWay
+          ]
 	}
 
+	// Running
+	TextBox "RunningTextBox" {
+        Margin: [16, 8, 16, 8]
+		HintAssist.Hint: "Running"
+        HintAssist.IsFloating: true
+        IsReadOnly: true
+		Text: bind Running
+	}
 
     // Buttons
     @StackPanelHorizontal {

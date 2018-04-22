@@ -45,7 +45,7 @@ namespace DiscordChatCloner.Services
             aTimer.Enabled = true;
 
             // TODO we just pause then die here.  - where is this run form?
-            Thread.Sleep(100000);
+            Thread.Sleep(120000);
             aTimer.Stop();
         }
     }

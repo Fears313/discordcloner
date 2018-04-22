@@ -106,6 +106,8 @@
     <Compile Include="Messages\ShowSettingsMessage.cs" />
     <Compile Include="Messages\CreateClonerMessage.cs" />
     <Compile Include="Messages\StartCloneMessage.cs" />
+    <Compile Include="Messages\StopClonerMessage.cs" />
+    <Compile Include="Messages\StartClonerMessage.cs" />
     <Compile Include="Models\AttachmentType.cs" />
     <Compile Include="Models\ChannelChatLog.cs" />
     <Compile Include="Models\ChannelType.cs" />
