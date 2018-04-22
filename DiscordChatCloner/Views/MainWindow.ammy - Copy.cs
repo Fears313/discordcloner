@@ -16,19 +16,10 @@ namespace DiscordChatCloner.Views
             // Dialogs
             Messenger.Default.Register<ShowErrorMessage>(this,
                 m => DialogHost.Show(new ErrorDialog()).Forget());
-
             Messenger.Default.Register<ShowCloneDoneMessage>(this,
                 m => DialogHost.Show(new CloneDoneDialog()).Forget());
-
             Messenger.Default.Register<ShowCloneSetupMessage>(this,
                 m => DialogHost.Show(new CloneSetupDialog()).Forget());
-
-            Messenger.Default.Register<ShowClonerCreateMessage>(this,
-                m => DialogHost.Show(new ClonerCreateDialog()).Forget());
-
-            Messenger.Default.Register<ShowClonerEditMessage>(this,
-                m => DialogHost.Show(new ClonerEditDialog()).Forget());
-
             Messenger.Default.Register<ShowSettingsMessage>(this,
                 m => DialogHost.Show(new SettingsDialog()).Forget());
         }

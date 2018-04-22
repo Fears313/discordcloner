@@ -24,6 +24,8 @@ namespace DiscordChatCloner
             SimpleIoc.Default.Register<IErrorViewModel, ErrorViewModel>(true);
             SimpleIoc.Default.Register<ICloneDoneViewModel, CloneDoneViewModel>(true);
             SimpleIoc.Default.Register<ICloneSetupViewModel, CloneSetupViewModel>(true);
+            SimpleIoc.Default.Register<IClonerCreateViewModel, ClonerCreateViewModel>(true);
+            SimpleIoc.Default.Register<IClonerEditViewModel, ClonerEditViewModel>(true);
             SimpleIoc.Default.Register<IMainViewModel, MainViewModel>(true);
             SimpleIoc.Default.Register<ISettingsViewModel, SettingsViewModel>(true);
         }
@@ -37,6 +39,8 @@ namespace DiscordChatCloner
         public IErrorViewModel ErrorViewModel => ServiceLocator.Current.GetInstance<IErrorViewModel>();
         public ICloneDoneViewModel CloneDoneViewModel => ServiceLocator.Current.GetInstance<ICloneDoneViewModel>();
         public ICloneSetupViewModel CloneSetupViewModel => ServiceLocator.Current.GetInstance<ICloneSetupViewModel>();
+        public IClonerCreateViewModel ClonerCreateViewModel => ServiceLocator.Current.GetInstance<IClonerCreateViewModel>();
+        public IClonerEditViewModel ClonerEditViewModel => ServiceLocator.Current.GetInstance<IClonerEditViewModel>();
         public IMainViewModel MainViewModel => ServiceLocator.Current.GetInstance<IMainViewModel>();
         public ISettingsViewModel SettingsViewModel => ServiceLocator.Current.GetInstance<ISettingsViewModel>();
     }

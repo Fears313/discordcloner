@@ -98,14 +98,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\HttpErrorStatusCodeException.cs" />
+    <Compile Include="Messages\ShowClonerEditMessage.cs" />
+    <Compile Include="Messages\ShowClonerCreateMessage.cs" />
     <Compile Include="Messages\ShowErrorMessage.cs" />
     <Compile Include="Messages\ShowCloneDoneMessage.cs" />
     <Compile Include="Messages\ShowCloneSetupMessage.cs" />
     <Compile Include="Messages\ShowSettingsMessage.cs" />
+    <Compile Include="Messages\CreateClonerMessage.cs" />
     <Compile Include="Messages\StartCloneMessage.cs" />
     <Compile Include="Models\AttachmentType.cs" />
     <Compile Include="Models\ChannelChatLog.cs" />
     <Compile Include="Models\ChannelType.cs" />
+    <Compile Include="Models\Cloner.cs" />
     <Compile Include="Models\Extensions.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\MessageType.cs" />
@@ -113,9 +117,13 @@
     <Compile Include="Services\ICloneService.cs" />
     <Compile Include="Services\IMessageGroupService.cs" />
     <Compile Include="Services\MessageGroupService.cs" />
+    <Compile Include="ViewModels\ClonerCreateViewModel.cs" />
+    <Compile Include="ViewModels\ClonerEditViewModel.cs" />
     <Compile Include="ViewModels\ErrorViewModel.cs" />
     <Compile Include="ViewModels\CloneSetupViewModel.cs" />
     <Compile Include="ViewModels\CloneDoneViewModel.cs" />
+    <Compile Include="ViewModels\IClonerCreateViewModel.cs" />
+    <Compile Include="ViewModels\IClonerEditViewModel.cs" />
     <Compile Include="ViewModels\IErrorViewModel.cs" />
     <Compile Include="ViewModels\ICloneSetupViewModel.cs" />
     <Compile Include="ViewModels\ICloneDoneViewModel.cs" />
@@ -129,6 +137,12 @@
     </Compile>
     <Compile Include="Views\CloneSetupDialog.ammy.cs">
       <DependentUpon>CloneSetupDialog.ammy</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ClonerEditDialog.ammy.cs">
+      <DependentUpon>ClonerEditDialog.ammy</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ClonerCreateDialog.ammy.cs">
+      <DependentUpon>ClonerCreateDialog.ammy</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsDialog.ammy.cs">
       <DependentUpon>SettingsDialog.ammy</DependentUpon>
@@ -153,10 +167,25 @@
       <DependentUpon>CloneSetupDialog.ammy</DependentUpon>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\ClonerEditDialog.g.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>ClonerEditDialog.ammy</DependentUpon>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ClonerCreateDialog.g.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>ClonerCreateDialog.ammy</DependentUpon>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\MainWindow.g.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <DependentUpon>MainWindow.ammy</DependentUpon>
+    </Page>
+    <Page Include="Views\SettingsDialog.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>SettingsDialog.ammy</DependentUpon>
     </Page>
     <Compile Include="App.ammy.cs">
       <DependentUpon>App.ammy</DependentUpon>
@@ -178,11 +207,6 @@
     <Compile Include="Views\MainWindow.ammy.cs">
       <DependentUpon>MainWindow.ammy</DependentUpon>
     </Compile>
-    <Page Include="Views\SettingsDialog.g.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <DependentUpon>SettingsDialog.ammy</DependentUpon>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -205,6 +229,8 @@
     <None Include="Views\ErrorDialog.ammy" />
     <None Include="Views\CloneDoneDialog.ammy" />
     <None Include="Views\CloneSetupDialog.ammy" />
+    <None Include="Views\ClonerCreateDialog.ammy" />
+    <None Include="Views\ClonerEditDialog.ammy" />
     <None Include="Views\MainWindow.ammy" />
     <None Include="Views\SettingsDialog.ammy" />
   </ItemGroup>

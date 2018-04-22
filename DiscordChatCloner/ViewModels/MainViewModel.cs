@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -27,8 +28,9 @@ namespace DiscordChatCloner.ViewModels
         private IReadOnlyList<Guild> _availableGuilds;
         private Guild _selectedGuild;
         private IReadOnlyList<Channel> _availableChannels;
+        private ObservableCollection<Cloner> _availableCloners;
 
-       
+
         public bool IsBusy
         {
             get => _isBusy;
@@ -54,7 +56,6 @@ namespace DiscordChatCloner.ViewModels
                 PullDataCommand.RaiseCanExecuteChanged();
             }
         }
-
 
         public Dictionary<Guild, IReadOnlyList<Channel>> GuildChannelMap
         {
@@ -88,10 +89,21 @@ namespace DiscordChatCloner.ViewModels
             private set => Set(ref _availableChannels, value);
         }
 
+        public ObservableCollection<Cloner> AvailableCloners
+        {
+            get => _availableCloners;
+            private set => Set(ref _availableCloners, value);
+        }
+
         public RelayCommand PullDataCommand { get; }
         public RelayCommand ShowSettingsCommand { get; }
         public RelayCommand ShowAboutCommand { get; }
         public RelayCommand<Channel> ShowCloneSetupCommand { get; }
+
+        public RelayCommand ShowClonerCreateCommand { get; }
+        public RelayCommand<Cloner> ShowClonerEditCommand { get; }
+
+        public RelayCommand CreateClonerCommand { get; }
 
         public MainViewModel(ISettingsService settingsService, IDataService dataService,
             IMessageGroupService messageGroupService, ICloneService cloneService)
@@ -103,11 +115,27 @@ namespace DiscordChatCloner.ViewModels
 
             _guildChannelsMap = new Dictionary<Guild, IReadOnlyList<Channel>>();
 
+            AvailableCloners = new ObservableCollection<Cloner>()
+            {
+                new Cloner("1", "Cloner 1", null, null, null, null, 999),
+                new Cloner("2", "Cloner 2", null, null, null, null, 998),
+                new Cloner("3", "Cloner 3", null, null, null, null, 997),
+                new Cloner("4", "Cloner 4", null, null, null, null, 996)
+            };
+
+
             // Commands
             PullDataCommand = new RelayCommand(PullData, () => Token.IsNotBlank() && !IsBusy);
             ShowSettingsCommand = new RelayCommand(ShowSettings);
             ShowAboutCommand = new RelayCommand(ShowAbout);
             ShowCloneSetupCommand = new RelayCommand<Channel>(ShowCloneSetup, _ => !IsBusy);
+            ShowClonerCreateCommand = new RelayCommand(ShowClonerCreate);
+            ShowClonerEditCommand = new RelayCommand<Cloner>(ShowClonerEdit);
+
+            MessengerInstance.Register<CreateClonerMessage>(this, m => 
+            {
+                CreateCloner(m.FromGuild, m.FromChannel, m.ToGuild, m.ToChannel, m.PollingFrequency);
+            });
 
             // Messages
             MessengerInstance.Register<StartCloneMessage>(this, m =>
@@ -180,8 +208,25 @@ namespace DiscordChatCloner.ViewModels
 
         private void ShowCloneSetup(Channel channel)
         {
-            MessengerInstance.Send(new ShowCloneSetupMessage(SelectedGuild, channel, AvailableChannels, _guildChannelsMap));
+            MessengerInstance.Send(new ShowCloneSetupMessage(SelectedGuild, channel, _guildChannelsMap));
         }
+
+        private void ShowClonerCreate()
+        {
+            MessengerInstance.Send(new ShowClonerCreateMessage(_guildChannelsMap));
+        }
+
+        private void ShowClonerEdit(Cloner cloner)
+        {
+            MessengerInstance.Send(new ShowClonerEditMessage(cloner));
+        }
+
+        private async void CreateCloner(Guild fromGuild, Channel fromChannel, Guild toGuild, Channel toChannel, int pollingFrequency)
+        {
+            Cloner cloner = new Cloner("new", "My new one", fromGuild, fromChannel, toGuild, toChannel, pollingFrequency);
+            this.AvailableCloners.Add(cloner);
+        }
+
 
         private async void DoClone(Channel fromChannel, Channel toChannel, int pollingFrequency)
         {

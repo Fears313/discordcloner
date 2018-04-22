@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using DiscordChatCloner.Models;
+﻿using DiscordChatCloner.Models;
 using GalaSoft.MvvmLight.CommandWpf;
 
 namespace DiscordChatCloner.ViewModels

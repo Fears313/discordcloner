@@ -1,0 +1,103 @@
+﻿using DiscordChatCloner.Models
+using MaterialDesignThemes.Wpf
+
+UserControl "DiscordChatCloner.Views.ClonerEditDialog" {
+  DataContext: bind ClonerEditViewModel from $resource Container
+  Width: 325
+
+  StackPanel {
+
+    Label { 
+      Content: "Edit Cloner"
+    }
+
+    // From Guild
+    TextBox {
+      Margin: [16, 8, 16, 8]
+      HintAssist.Hint: "From Guild"
+      HintAssist.IsFloating: true
+      IsReadOnly: true
+      Text: bind FromGuild.Name
+      set [
+            Mode: OneWay
+      ]
+    }
+
+    // From Channel
+    TextBox {
+      Margin: [16, 8, 16, 8]
+      HintAssist.Hint: "From Channel"
+      HintAssist.IsFloating: true
+      IsReadOnly: true
+      Text: bind FromChannel.Name
+      set [
+            Mode: OneWay
+      ]
+    }
+
+    // To Guild
+    TextBox {
+      Margin: [16, 8, 16, 8]
+      HintAssist.Hint: "To Guild"
+      HintAssist.IsFloating: true
+      IsReadOnly: true
+      Text: bind ToGuild.Name
+      set [
+            Mode: OneWay
+      ]
+    }
+
+    // To Channel
+    TextBox {
+      Margin: [16, 8, 16, 8]
+      HintAssist.Hint: "To Channel"
+      HintAssist.IsFloating: true
+      IsReadOnly: true
+      Text: bind ToChannel.Name
+      set [
+            Mode: OneWay
+      ]
+    }
+
+
+	// Polling frequency (number input default to something relevant and validate not too often)
+	TextBox "PollingFrequencyTextBox" {
+        Margin: [16, 8, 16, 8]
+		HintAssist.Hint: "Polling Frequency (ms)"
+        HintAssist.IsFloating: true
+        IsReadOnly: true
+		Text: bind PollingFrequency
+	}
+
+
+    // Buttons
+    @StackPanelHorizontal {
+      HorizontalAlignment: Center
+
+
+      // Start
+      Button {
+        Margin: 8
+        Command: bind StartClonerCommand
+        Content: "START"
+        Style: resource dyn "MaterialDesignFlatButton"
+      }
+
+      // Stop
+      Button {
+        Margin: 8
+        Command: bind StopClonerCommand
+        Content: "STOP"
+        Style: resource dyn "MaterialDesignFlatButton"
+      }
+
+      // Close
+      Button {
+        Margin: 8
+        Command: DialogHost.CloseDialogCommand
+        Content: "CLOSE"
+        Style: resource dyn "MaterialDesignFlatButton"
+      }
+    }
+  }
+}
