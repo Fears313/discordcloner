@@ -1,15 +1,14 @@
-﻿using DiscordChatCloner.Models;
-using System.Collections.Generic;
+﻿using DiscordChatCloner.Worker;
 
 namespace DiscordChatCloner.Messages
 {
     public class ShowClonerEditMessage
     {
-        public Cloner Cloner { get; }
+        public ClonerWorker ClonerWorker { get; }
 
-        public ShowClonerEditMessage(Cloner cloner)
+        public ShowClonerEditMessage(ClonerWorker clonerWorker)
         {
-            Cloner = cloner;
+            ClonerWorker = clonerWorker;
         }
     }
 }

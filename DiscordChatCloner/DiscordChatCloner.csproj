@@ -102,7 +102,6 @@
     <Compile Include="Messages\ShowClonerCreateMessage.cs" />
     <Compile Include="Messages\ShowErrorMessage.cs" />
     <Compile Include="Messages\ShowCloneDoneMessage.cs" />
-    <Compile Include="Messages\ShowCloneSetupMessage.cs" />
     <Compile Include="Messages\ShowSettingsMessage.cs" />
     <Compile Include="Messages\CreateClonerMessage.cs" />
     <Compile Include="Messages\StartCloneMessage.cs" />
@@ -122,12 +121,10 @@
     <Compile Include="ViewModels\ClonerCreateViewModel.cs" />
     <Compile Include="ViewModels\ClonerEditViewModel.cs" />
     <Compile Include="ViewModels\ErrorViewModel.cs" />
-    <Compile Include="ViewModels\CloneSetupViewModel.cs" />
     <Compile Include="ViewModels\CloneDoneViewModel.cs" />
     <Compile Include="ViewModels\IClonerCreateViewModel.cs" />
     <Compile Include="ViewModels\IClonerEditViewModel.cs" />
     <Compile Include="ViewModels\IErrorViewModel.cs" />
-    <Compile Include="ViewModels\ICloneSetupViewModel.cs" />
     <Compile Include="ViewModels\ICloneDoneViewModel.cs" />
     <Compile Include="ViewModels\ISettingsViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
@@ -136,9 +133,6 @@
     </Compile>
     <Compile Include="Views\CloneDoneDialog.ammy.cs">
       <DependentUpon>CloneDoneDialog.ammy</DependentUpon>
-    </Compile>
-    <Compile Include="Views\CloneSetupDialog.ammy.cs">
-      <DependentUpon>CloneSetupDialog.ammy</DependentUpon>
     </Compile>
     <Compile Include="Views\ClonerEditDialog.ammy.cs">
       <DependentUpon>ClonerEditDialog.ammy</DependentUpon>
@@ -149,6 +143,7 @@
     <Compile Include="Views\SettingsDialog.ammy.cs">
       <DependentUpon>SettingsDialog.ammy</DependentUpon>
     </Compile>
+    <Compile Include="Worker\ClonerWorker.cs" />
     <Page Include="App.g.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
@@ -162,11 +157,6 @@
     <Page Include="Views\CloneDoneDialog.g.xaml">
       <Generator>MSBuild:Compile</Generator>
       <DependentUpon>CloneDoneDialog.ammy</DependentUpon>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\CloneSetupDialog.g.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <DependentUpon>CloneSetupDialog.ammy</DependentUpon>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ClonerEditDialog.g.xaml">
@@ -230,7 +220,6 @@
     </None>
     <None Include="Views\ErrorDialog.ammy" />
     <None Include="Views\CloneDoneDialog.ammy" />
-    <None Include="Views\CloneSetupDialog.ammy" />
     <None Include="Views\ClonerCreateDialog.ammy" />
     <None Include="Views\ClonerEditDialog.ammy" />
     <None Include="Views\MainWindow.ammy" />
@@ -238,10 +227,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\ExportService\DarkTheme.css" />
-    <EmbeddedResource Include="Resources\ExportService\LightTheme.css" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
@@ -254,6 +239,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Ammy.1.2.87\build\Ammy.targets" Condition="Exists('..\packages\Ammy.1.2.87\build\Ammy.targets')" />

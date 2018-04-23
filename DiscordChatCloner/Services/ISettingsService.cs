@@ -1,4 +1,5 @@
 ﻿using DiscordChatCloner.Models;
+using System.Collections.Generic;
 
 namespace DiscordChatCloner.Services
 {
@@ -9,6 +10,8 @@ namespace DiscordChatCloner.Services
 
         string LastToken { get; set; }
         int PollingFrequency { get; set; }
+
+        List<Cloner> Cloners { get; set; }
 
         void Load();
         void Save();

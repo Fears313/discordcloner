@@ -1,82 +1,40 @@
 ﻿using System;
-using System.ComponentModel;
-using System.IO;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using DiscordChatCloner.Models;
-using Tyrrrz.Extensions;
 
 namespace DiscordChatCloner.Services
 {
     public partial class CloneService : ICloneService
     {
-        private readonly ISettingsService _settingsService;
         private readonly IDataService _dataService;
-        private System.Timers.Timer aTimer;
+        private Timer aTimer;
 
-        public CloneService(ISettingsService settingsService, IDataService dataService)
-        {
-            _settingsService = settingsService;
+        public CloneService(IDataService dataService) {
             _dataService = dataService;
         }
 
-        public async void Clone(string token, Cloner cloner, BackgroundWorker worker)
-        {
-            Console.WriteLine("Poodles on the march");
-
-            // Create a timer with a two second interval.
-            aTimer = new System.Timers.Timer(cloner.PollingFrequency);
+        public async Task<Timer> CloneAsync(string token, Cloner cloner) {
+            aTimer = new Timer(cloner.PollingFrequency);
             aTimer.AutoReset = true;
-            var testMsgs = await _dataService.GetChannelMessagesAsync(token, cloner.FromChannel.Id, null);
-
-            //var testMsgs = await _dataService.GetChannelMessagesAsync(token, cloner.FromChannel.Id, null);
-            var lastMessageId = testMsgs[0].Id;
-
-            // Hook up the Elapsed event for the timer. 
-            aTimer.Elapsed += async (s, e) =>
-            {
-                Console.WriteLine("The Elapsed event was raised at {0:HH:mm:ss.fff}", e.SignalTime);
-                var messages = await _dataService.GetChannelMessagesAsync(token, cloner.FromChannel.Id, lastMessageId);
-                foreach (var msg in messages)
-                {
-                    var newMessage = _dataService.PublishStringAsync(token, cloner.ToChannel.Id, msg.Content);
-                    lastMessageId = msg.Id;
-                }
-            };
-            aTimer.Enabled = true;
-        }
-
-        public async Task CloneAsync(string token, Cloner cloner, BackgroundWorker worker)
-        {
-            // Create a timer with a two second interval.
-            aTimer = new System.Timers.Timer(cloner.PollingFrequency);
-            aTimer.AutoReset = true;
-
 
             var testMsgs = await _dataService.GetChannelMessagesAsync(token, cloner.FromChannel.Id, null);
             var lastMessageId = testMsgs[0].Id;
 
             // Hook up the Elapsed event for the timer. 
             aTimer.Elapsed += async (s, e) => {
-                worker.ReportProgress(1, "Polling for cloner " + cloner.Name);
-                Console.WriteLine("The Elapsed event was raised at {0:HH:mm:ss.fff}", e.SignalTime);
-
+                Console.WriteLine("{0:HH:mm:ss.fff} [{1}] polling for messages", e.SignalTime, cloner.Name);
                 var messages = await _dataService.GetChannelMessagesAsync(token, cloner.FromChannel.Id, lastMessageId);
-                foreach (var msg in messages)
-                {
-                    var newMessage = _dataService.PublishStringAsync(token, cloner.ToChannel.Id, msg.Content);
+                foreach (var msg in messages) {
+                    var newMessage = await _dataService.PublishStringAsync(token, cloner.ToChannel.Id, msg.Content);
                     lastMessageId = msg.Id;
                 }
             };
-            aTimer.Enabled = true;
 
-            // TODO we just pause then die here.  - where is this run form?
-            //Thread.Sleep(12000);
-            //aTimer.Stop();
+            aTimer.Enabled = true;
+            return aTimer;
         }
     }
 

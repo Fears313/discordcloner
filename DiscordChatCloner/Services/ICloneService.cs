@@ -1,12 +1,11 @@
-﻿using System.ComponentModel;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using System.Timers;
 using DiscordChatCloner.Models;
 
 namespace DiscordChatCloner.Services
 {
     public interface ICloneService
     {
-        Task CloneAsync(string token, Cloner cloner, BackgroundWorker worker);
-        void Clone(string token, Cloner cloner, BackgroundWorker worker);
+        Task<Timer> CloneAsync(string token, Cloner cloner);
     }
 }

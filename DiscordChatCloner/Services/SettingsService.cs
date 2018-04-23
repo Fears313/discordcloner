@@ -1,4 +1,6 @@
-﻿using Tyrrrz.Settings;
+﻿using DiscordChatCloner.Models;
+using System.Collections.Generic;
+using Tyrrrz.Settings;
 
 namespace DiscordChatCloner.Services
 {
@@ -10,6 +12,8 @@ namespace DiscordChatCloner.Services
         public string LastToken { get; set; }
 
         public int PollingFrequency { get; set; } = 20000;
+
+        public List<Cloner> Cloners { get; set; } = new List<Cloner>();
 
         public SettingsService()
         {

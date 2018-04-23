@@ -117,14 +117,14 @@ Window "DiscordChatCloner.Views.MainWindow" {
                     Margin: 8
                     Command: bind ShowClonerCreateCommand
                     Content: "Create"
-                    Style: resource dyn "MaterialDesignFlatButton"
+                    Style: resource dyn "MaterialDesignRaisedButton"
                 }
             }
 
             // Cloners
             Border {
               ListBox {
-                ItemsSource: bind AvailableCloners
+                ItemsSource: bind ClonerWorkers
                 HorizontalContentAlignment: Stretch
                 VirtualizingStackPanel.IsVirtualizing: false
 
@@ -155,7 +155,7 @@ Window "DiscordChatCloner.Views.MainWindow" {
                       TextBlock {
                         Margin: [3, 8, 8, 8]
                         FontSize: 14
-                        Text: bind Name
+                        Text: bind Cloner.Name
                         VerticalAlignment: Center
                       }
                     }
@@ -171,6 +171,7 @@ Window "DiscordChatCloner.Views.MainWindow" {
           Margin: [32, 32, 8, 8]
           Visibility: bind IsDataAvailable
                       convert (bool b) => b ? Visibility.Hidden : Visibility.Visible
+
           TextBlock {
             FontSize: 18
             Text: "DiscordChatCloner needs your authorization token to work."

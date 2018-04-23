@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using DiscordChatCloner.Models;
+using DiscordChatCloner.Worker;
 using GalaSoft.MvvmLight.CommandWpf;
 
 namespace DiscordChatCloner.ViewModels
@@ -12,14 +13,10 @@ namespace DiscordChatCloner.ViewModels
 
         string Token { get; set; }
 
-        //IReadOnlyList<Guild> AvailableGuilds { get; }
-        //Guild SelectedGuild { get; set; }
-        //IReadOnlyList<Channel> AvailableChannels { get; }
-        ObservableCollection<Cloner> AvailableCloners { get; }
+        ObservableCollection<ClonerWorker> ClonerWorkers { get; }
 
         RelayCommand PullDataCommand { get; }
         RelayCommand ShowSettingsCommand { get; }
         RelayCommand ShowAboutCommand { get; }
-        //RelayCommand<Channel> ShowCloneSetupCommand { get; }
     }
 }
