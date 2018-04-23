@@ -43,7 +43,7 @@ UserControl "DiscordChatCloner.Views.ClonerCreateDialog" {
       HintAssist.Hint: "From Channel"
       HintAssist.IsFloating: true
       IsReadOnly: true
-      ItemsSource: bind AvailableChannels
+      ItemsSource: bind AvailableFromChannels
       SelectedItem: bind FromChannel
 
       ItemTemplate: DataTemplate {
@@ -78,7 +78,7 @@ UserControl "DiscordChatCloner.Views.ClonerCreateDialog" {
       HintAssist.Hint: "To Channel"
       HintAssist.IsFloating: true
       IsReadOnly: true
-      ItemsSource: bind AvailableChannels
+      ItemsSource: bind AvailableToChannels
       SelectedItem: bind ToChannel
 
       ItemTemplate: DataTemplate {

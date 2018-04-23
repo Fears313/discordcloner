@@ -19,16 +19,23 @@ namespace DiscordChatCloner.ViewModels
         public Channel _toChannel;
         public Dictionary<Guild, IReadOnlyList<Channel>> _guildChannelMap;
         public int _pollingFrequency;
-        private IReadOnlyList<Channel> _availableChannels;
+        private IReadOnlyList<Channel> _availableFromChannels;
+        private IReadOnlyList<Channel> _availableToChannels;
 
         public IReadOnlyList<Guild> AvailableGuilds {
             get => _guildChannelMap.Keys.ToArray();
         }
 
-        public IReadOnlyList<Channel> AvailableChannels
+        public IReadOnlyList<Channel> AvailableFromChannels
         {
-            get => _availableChannels;
-            set => Set(ref _availableChannels, value);
+            get => _availableFromChannels;
+            set => Set(ref _availableFromChannels, value);
+        }
+
+        public IReadOnlyList<Channel> AvailableToChannels
+        {
+            get => _availableToChannels;
+            set => Set(ref _availableToChannels, value);
         }
 
         public string Name
@@ -43,7 +50,7 @@ namespace DiscordChatCloner.ViewModels
             set
             {
                 Set(ref _fromGuild, value);
-                AvailableChannels = _fromGuild == null ? null : _guildChannelMap[_fromGuild];
+                AvailableFromChannels = _fromGuild == null ? null : _guildChannelMap[_fromGuild];
             }
         }
 
@@ -58,7 +65,7 @@ namespace DiscordChatCloner.ViewModels
             get => _toGuild;
             set {
                 Set(ref _toGuild, value);
-                AvailableChannels = _toGuild == null ? null : _guildChannelMap[_toGuild];
+                AvailableToChannels = _toGuild == null ? null : _guildChannelMap[_toGuild];
             }
         }
 
