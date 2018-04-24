@@ -102,6 +102,15 @@ UserControl "DiscordChatCloner.Views.ClonerEditDialog" {
         Style: resource dyn "MaterialDesignFlatButton"
       }
 
+      // Delete
+      Button {
+        Margin: 8
+        Command: bind DeleteClonerCommand
+        Click: DeleteButton_Click
+        Content: "DELETE"
+        Style: resource dyn "MaterialDesignFlatButton"
+      }
+
       // Close
       Button {
         Margin: 8

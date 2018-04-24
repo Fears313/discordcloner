@@ -98,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\HttpErrorStatusCodeException.cs" />
+    <Compile Include="Messages\DeleteClonerMessage.cs" />
     <Compile Include="Messages\ShowClonerEditMessage.cs" />
     <Compile Include="Messages\ShowClonerCreateMessage.cs" />
     <Compile Include="Messages\ShowErrorMessage.cs" />

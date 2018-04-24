@@ -15,7 +15,7 @@ namespace DiscordChatCloner.Views
             InitializeComponent();
         }
 
-        public void CloneButton_Click(object sender, RoutedEventArgs args)
+        public void DeleteButton_Click(object sender, RoutedEventArgs args)
         {
             DialogHost.CloseDialogCommand.Execute(null, null);
         }

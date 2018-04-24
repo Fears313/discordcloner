@@ -102,6 +102,10 @@ namespace DiscordChatCloner.ViewModels
                 CreateCloner(m.Name, m.FromGuild, m.FromChannel, m.ToGuild, m.ToChannel, m.PollingFrequency);
             });
 
+            MessengerInstance.Register<DeleteClonerMessage>(this, m => {
+                DeleteCloner(m.Cloner);
+            });
+
             //MessengerInstance.Register<StartClonerMessage>(this, m => {
             //    DoClone(m.Cloner);
             //});
@@ -189,5 +193,14 @@ namespace DiscordChatCloner.ViewModels
             ClonerWorkers.Add(new ClonerWorker(cloner, Token, _cloneService));
             _settingsService.Cloners.Add(cloner);
         }
+
+        private void DeleteCloner(Cloner cloner)
+        {
+            _settingsService.Cloners.Remove(cloner);
+            var workers = ClonerWorkers.ToList();
+            workers.RemoveAll(worker => worker.Cloner == cloner);
+            ClonerWorkers = new ObservableCollection<ClonerWorker>(workers);
+        }
+
     }
 }

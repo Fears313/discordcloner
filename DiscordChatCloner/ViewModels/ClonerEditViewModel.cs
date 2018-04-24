@@ -24,6 +24,7 @@ namespace DiscordChatCloner.ViewModels
         // Commands
         public RelayCommand StartClonerCommand { get; }
         public RelayCommand StopClonerCommand { get; }
+        public RelayCommand DeleteClonerCommand { get; }
 
         public ClonerEditViewModel(ISettingsService settingsService)
         {
@@ -32,6 +33,7 @@ namespace DiscordChatCloner.ViewModels
             // Commands
             StartClonerCommand = new RelayCommand(StartCloner, () => IsRunning == false);
             StopClonerCommand = new RelayCommand(StopCloner, () => IsRunning == true);
+            DeleteClonerCommand = new RelayCommand(DeleteCloner, () => IsRunning == false);
 
             // Messages
             MessengerInstance.Register<ShowClonerEditMessage>(this, m =>
@@ -56,6 +58,11 @@ namespace DiscordChatCloner.ViewModels
         {
             ClonerWorker.Stop();
 //            MessengerInstance.Send(new StopClonerMessage(Cloner));
+        }
+
+        private void DeleteCloner()
+        {
+            MessengerInstance.Send(new DeleteClonerMessage(Cloner));
         }
     }
 }
