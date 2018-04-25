@@ -1,17 +1,13 @@
-﻿using DiscordChatCloner.Models;
+﻿using DiscordChatCloner.Worker;
 
 namespace DiscordChatCloner.Messages
 {
     public class StartClonerMessage
     {
-        public Cloner Cloner { get; }
+        public ClonerWorker ClonerWorker { get; }
 
-        public Channel ToChannel { get; }
-
-        public int PollingFrequency { get; }
-
-        public StartClonerMessage(Cloner cloner) {
-            Cloner = cloner;
+        public StartClonerMessage(ClonerWorker clonerWorker) {
+            ClonerWorker = clonerWorker;
         }
     }
 }

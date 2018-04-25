@@ -98,17 +98,23 @@ namespace DiscordChatCloner.ViewModels
             ShowClonerCreateCommand = new RelayCommand(ShowClonerCreate, () => IsDataAvailable);
             ShowClonerEditCommand = new RelayCommand<ClonerWorker>(ShowClonerEdit, _ => !IsBusy);
 
-            MessengerInstance.Register<CreateClonerMessage>(this, m => {
-                CreateCloner(m.Name, m.FromGuild, m.FromChannel, m.ToGuild, m.ToChannel, m.PollingFrequency);
+            MessengerInstance.Register<SaveClonerMessage>(this, m => {
+                SaveCloner(m.Cloner);
             });
 
             MessengerInstance.Register<DeleteClonerMessage>(this, m => {
                 DeleteCloner(m.Cloner);
             });
 
-            //MessengerInstance.Register<StartClonerMessage>(this, m => {
-            //    DoClone(m.Cloner);
-            //});
+            MessengerInstance.Register<StartClonerMessage>(this, m =>
+            {
+                StartClonerWorker(m.ClonerWorker);
+            });
+
+            MessengerInstance.Register<StopClonerMessage>(this, m =>
+            {
+                StopClonerWorker(m.ClonerWorker);
+            });
 
             // Defaults
             _token = _settingsService.LastToken;
@@ -187,9 +193,8 @@ namespace DiscordChatCloner.ViewModels
             MessengerInstance.Send(new ShowClonerEditMessage(clonerWorker));
         }
 
-        private void CreateCloner(string name, Guild fromGuild, Channel fromChannel, Guild toGuild, Channel toChannel, int pollingFrequency)
+        private void SaveCloner(Cloner cloner)
         {
-            Cloner cloner = new Cloner("new", name, fromGuild, fromChannel, toGuild, toChannel, pollingFrequency);
             ClonerWorkers.Add(new ClonerWorker(cloner, Token, _cloneService));
             _settingsService.Cloners.Add(cloner);
         }
@@ -202,5 +207,14 @@ namespace DiscordChatCloner.ViewModels
             ClonerWorkers = new ObservableCollection<ClonerWorker>(workers);
         }
 
+        private void StartClonerWorker(ClonerWorker clonerWorker)
+        {
+            clonerWorker.Start();
+        }
+
+        private void StopClonerWorker(ClonerWorker clonerWorker)
+        {
+            clonerWorker.Stop();
+        }
     }
 }

@@ -101,7 +101,8 @@ namespace DiscordChatCloner.ViewModels
 
         private void CreateCloner()
         {
-            MessengerInstance.Send(new CreateClonerMessage(Name, FromGuild, FromChannel, ToGuild, ToChannel, PollingFrequency));
+            Cloner cloner = new Cloner(Name, FromGuild, FromChannel, ToGuild, ToChannel, PollingFrequency);
+            MessengerInstance.Send(new SaveClonerMessage(cloner));
         }
     }
 }

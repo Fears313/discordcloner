@@ -50,14 +50,12 @@ namespace DiscordChatCloner.ViewModels
 
         private void StartCloner()
         {
-            ClonerWorker.Start();
-//            MessengerInstance.Send(new StartClonerMessage(Cloner));
+            MessengerInstance.Send(new StartClonerMessage(ClonerWorker));
         }
 
         private void StopCloner()
         {
-            ClonerWorker.Stop();
-//            MessengerInstance.Send(new StopClonerMessage(Cloner));
+            MessengerInstance.Send(new StopClonerMessage(ClonerWorker));
         }
 
         private void DeleteCloner()

@@ -3,7 +3,6 @@ namespace DiscordChatCloner.Models
 {
     public class Cloner
     {
-        public string Id { get; }
         public string Name { get; }
         public Guild FromGuild { get; }
         public Channel FromChannel { get; }
@@ -11,8 +10,7 @@ namespace DiscordChatCloner.Models
         public Channel ToChannel { get; }
         public int PollingFrequency { get; }
 
-        public Cloner(string id, string name, Guild fromGuild, Channel fromChannel, Guild toGuild, Channel toChannel, int pollingFrequency) {
-            Id = id;
+        public Cloner(string name, Guild fromGuild, Channel fromChannel, Guild toGuild, Channel toChannel, int pollingFrequency) {
             Name = name;
             FromGuild = fromGuild;
             FromChannel = fromChannel;

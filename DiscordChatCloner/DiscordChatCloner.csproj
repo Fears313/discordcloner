@@ -104,7 +104,7 @@
     <Compile Include="Messages\ShowErrorMessage.cs" />
     <Compile Include="Messages\ShowCloneDoneMessage.cs" />
     <Compile Include="Messages\ShowSettingsMessage.cs" />
-    <Compile Include="Messages\CreateClonerMessage.cs" />
+    <Compile Include="Messages\SaveClonerMessage.cs" />
     <Compile Include="Messages\StartCloneMessage.cs" />
     <Compile Include="Messages\StopClonerMessage.cs" />
     <Compile Include="Messages\StartClonerMessage.cs" />
