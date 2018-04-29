@@ -115,6 +115,9 @@
     <Compile Include="Models\Extensions.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\MessageType.cs" />
+    <Compile Include="NewFolder1\Window1.ammy.cs">
+      <DependentUpon>Window1.ammy</DependentUpon>
+    </Compile>
     <Compile Include="Services\CloneService.cs" />
     <Compile Include="Services\ICloneService.cs" />
     <Compile Include="Services\IMessageGroupService.cs" />
@@ -129,6 +132,9 @@
     <Compile Include="ViewModels\ICloneDoneViewModel.cs" />
     <Compile Include="ViewModels\ISettingsViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="Views\ClonerWorkerGrid.ammy.cs">
+      <DependentUpon>ClonerWorkerGrid.ammy</DependentUpon>
+    </Compile>
     <Compile Include="Views\ErrorDialog.ammy.cs">
       <DependentUpon>ErrorDialog.ammy</DependentUpon>
     </Compile>
@@ -149,6 +155,16 @@
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
       <DependentUpon>App.ammy</DependentUpon>
+    </Page>
+    <Page Include="NewFolder1\Window1.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>Window1.ammy</DependentUpon>
+    </Page>
+    <Page Include="Views\ClonerWorkerGrid.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>ClonerWorkerGrid.ammy</DependentUpon>
     </Page>
     <Page Include="Views\ErrorDialog.g.xaml">
       <SubType>Designer</SubType>
@@ -216,9 +232,11 @@
     </EmbeddedResource>
     <None Include="App.ammy" />
     <None Include="lib.ammy" />
+    <None Include="NewFolder1\Window1.ammy" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Views\ClonerWorkerGrid.ammy" />
     <None Include="Views\ErrorDialog.ammy" />
     <None Include="Views\CloneDoneDialog.ammy" />
     <None Include="Views\ClonerCreateDialog.ammy" />

@@ -12,7 +12,7 @@ namespace DiscordChatCloner.ViewModels
         Channel ToChannel { get; }
         int PollingFrequency { get;  }
 
-        RelayCommand StartClonerCommand { get; }
-        RelayCommand StopClonerCommand { get; }
+        //RelayCommand StartClonerCommand { get; }
+        //RelayCommand StopClonerCommand { get; }
     }
 }

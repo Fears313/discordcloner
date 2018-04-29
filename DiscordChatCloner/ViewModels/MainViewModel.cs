@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -81,6 +82,10 @@ namespace DiscordChatCloner.ViewModels
         public RelayCommand<ClonerWorker> ShowClonerEditCommand { get; }
         public RelayCommand CreateClonerCommand { get; }
 
+        //public RelayCommand<ClonerWorker> StartClonerCommand { get; }
+        //public RelayCommand<ClonerWorker> StopClonerCommand { get; }
+        //public RelayCommand<Cloner> DeleteClonerCommand { get; }
+
         public MainViewModel(ISettingsService settingsService, IDataService dataService, IMessageGroupService messageGroupService, ICloneService cloneService)
         {
             _settingsService = settingsService;
@@ -97,6 +102,11 @@ namespace DiscordChatCloner.ViewModels
             ShowAboutCommand = new RelayCommand(ShowAbout);
             ShowClonerCreateCommand = new RelayCommand(ShowClonerCreate, () => IsDataAvailable);
             ShowClonerEditCommand = new RelayCommand<ClonerWorker>(ShowClonerEdit, _ => !IsBusy);
+
+
+            //StartClonerCommand = new RelayCommand<ClonerWorker>(StartClonerWorker);
+            //StopClonerCommand = new RelayCommand<ClonerWorker>(StopClonerWorker);
+            //DeleteClonerCommand = new RelayCommand<Cloner>(DeleteCloner);
 
             MessengerInstance.Register<SaveClonerMessage>(this, m => {
                 SaveCloner(m.Cloner);
@@ -116,7 +126,6 @@ namespace DiscordChatCloner.ViewModels
                 StopClonerWorker(m.ClonerWorker);
             });
 
-            // Defaults
             _token = _settingsService.LastToken;
             var cloners = _settingsService.Cloners;
             foreach(var cloner in cloners)
@@ -209,11 +218,13 @@ namespace DiscordChatCloner.ViewModels
 
         private void StartClonerWorker(ClonerWorker clonerWorker)
         {
+            Console.WriteLine("{0} Starting...", clonerWorker.Cloner.Name);
             clonerWorker.Start();
         }
 
         private void StopClonerWorker(ClonerWorker clonerWorker)
         {
+            Console.WriteLine("{0} Stopping...", clonerWorker.Cloner.Name);
             clonerWorker.Stop();
         }
     }

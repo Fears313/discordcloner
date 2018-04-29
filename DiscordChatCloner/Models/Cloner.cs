@@ -9,6 +9,7 @@ namespace DiscordChatCloner.Models
         public Guild ToGuild { get; }
         public Channel ToChannel { get; }
         public int PollingFrequency { get; }
+        public string LastClonedMessageId { get; set; }
 
         public Cloner(string name, Guild fromGuild, Channel fromChannel, Guild toGuild, Channel toChannel, int pollingFrequency) {
             Name = name;
@@ -17,6 +18,7 @@ namespace DiscordChatCloner.Models
             ToGuild = toGuild;
             ToChannel = toChannel;
             PollingFrequency = pollingFrequency;
+            LastClonedMessageId = fromChannel.LastMessageId;
         }
     }
 }

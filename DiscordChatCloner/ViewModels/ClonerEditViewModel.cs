@@ -9,7 +9,7 @@ namespace DiscordChatCloner.ViewModels
 {
     public class ClonerEditViewModel : ViewModelBase, IClonerEditViewModel
     {
-        private readonly ISettingsService _settingsService;
+        //private readonly ISettingsService _settingsService;
 
         public ClonerWorker ClonerWorker { get; private set; }
 
@@ -22,18 +22,18 @@ namespace DiscordChatCloner.ViewModels
         public bool IsRunning { get => ClonerWorker.IsRunning; }
 
         // Commands
-        public RelayCommand StartClonerCommand { get; }
-        public RelayCommand StopClonerCommand { get; }
-        public RelayCommand DeleteClonerCommand { get; }
+        //public RelayCommand StartClonerCommand { get; }
+        //public RelayCommand StopClonerCommand { get; }
+        //public RelayCommand DeleteClonerCommand { get; }
 
         public ClonerEditViewModel(ISettingsService settingsService)
         {
-            _settingsService = settingsService;
+            //_settingsService = settingsService;
 
             // Commands
-            StartClonerCommand = new RelayCommand(StartCloner, () => IsRunning == false);
-            StopClonerCommand = new RelayCommand(StopCloner, () => IsRunning == true);
-            DeleteClonerCommand = new RelayCommand(DeleteCloner, () => IsRunning == false);
+            //StartClonerCommand = new RelayCommand(StartCloner, () => IsRunning == false);
+            //StopClonerCommand = new RelayCommand(StopCloner, () => IsRunning == true);
+            //DeleteClonerCommand = new RelayCommand(DeleteCloner, () => IsRunning == false);
 
             // Messages
             MessengerInstance.Register<ShowClonerEditMessage>(this, m =>
@@ -48,19 +48,19 @@ namespace DiscordChatCloner.ViewModels
             });
         }
 
-        private void StartCloner()
-        {
-            MessengerInstance.Send(new StartClonerMessage(ClonerWorker));
-        }
+        //private void StartCloner()
+        //{
+        //    MessengerInstance.Send(new StartClonerMessage(ClonerWorker));
+        //}
 
-        private void StopCloner()
-        {
-            MessengerInstance.Send(new StopClonerMessage(ClonerWorker));
-        }
+        //private void StopCloner()
+        //{
+        //    MessengerInstance.Send(new StopClonerMessage(ClonerWorker));
+        //}
 
-        private void DeleteCloner()
-        {
-            MessengerInstance.Send(new DeleteClonerMessage(Cloner));
-        }
+        //private void DeleteCloner()
+        //{
+        //    MessengerInstance.Send(new DeleteClonerMessage(Cloner));
+        //}
     }
 }

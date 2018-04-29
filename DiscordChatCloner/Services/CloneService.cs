@@ -20,16 +20,15 @@ namespace DiscordChatCloner.Services
             aTimer = new Timer(cloner.PollingFrequency);
             aTimer.AutoReset = true;
 
-            var testMsgs = await _dataService.GetChannelMessagesAsync(token, cloner.FromChannel.Id, null);
-            var lastMessageId = testMsgs[0].Id;
-
             // Hook up the Elapsed event for the timer. 
             aTimer.Elapsed += async (s, e) => {
-                Console.WriteLine("{0:HH:mm:ss.fff} [{1}] polling for messages", e.SignalTime, cloner.Name);
-                var messages = await _dataService.GetChannelMessagesAsync(token, cloner.FromChannel.Id, lastMessageId);
+                Console.WriteLine("{0:HH:mm:ss.fff} [{1}] polling for messages after {2}", e.SignalTime, cloner.Name, cloner.LastClonedMessageId);
+                var messages = await _dataService.GetChannelMessagesAsync(token, cloner.FromChannel.Id, cloner.LastClonedMessageId);
+
                 foreach (var msg in messages) {
+                    Console.WriteLine("[{0}] Cloning message {1}", cloner.Name, msg.Id);
                     var newMessage = await _dataService.PublishStringAsync(token, cloner.ToChannel.Id, msg.Content);
-                    lastMessageId = msg.Id;
+                    cloner.LastClonedMessageId = msg.Id;
                 }
             };
 

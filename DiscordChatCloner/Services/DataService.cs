@@ -199,7 +199,7 @@ namespace DiscordChatCloner.Services
             while (true)
             {
                 // Form request url
-                var url = $"{ApiRoot}/channels/{channelId}/messages?token={token}&limit=1";
+                var url = $"{ApiRoot}/channels/{channelId}/messages?token={token}&limit=100";
 
                 if (afterId.IsNotBlank())
                 {
@@ -293,6 +293,7 @@ namespace DiscordChatCloner.Services
             // Get basic data
             var id = token.Value<string>("id");
             var type = (ChannelType) token.Value<int>("type");
+            var lastMessageId = token.Value<string>("last_message_id");
 
             // Extract name based on type
             string name;
@@ -306,7 +307,7 @@ namespace DiscordChatCloner.Services
                 name = token.Value<string>("name");
             }
 
-            return new Channel(id, name, type);
+            return new Channel(id, name, type, lastMessageId);
         }
 
         private static Message ParseMessage(JToken token,
@@ -366,15 +367,15 @@ namespace DiscordChatCloner.Services
                 .ToArray();
 
             // Get channel mentions
-            var mentionedChanenls = Regex.Matches(content, "<#(\\d+)>")
+            var mentionedChannels = Regex.Matches(content, "<#(\\d+)>")
                 .Cast<Match>()
                 .Select(m => m.Groups[1].Value)
                 .ExceptBlank()
-                .Select(i => channels.GetOrDefault(i) ?? new Channel(i, "deleted-channel", ChannelType.GuildTextChat))
+                .Select(i => channels.GetOrDefault(i) ?? new Channel(i, "deleted-channel", ChannelType.GuildTextChat, null))
                 .ToArray();
 
             return new Message(id, author, timeStamp, editedTimeStamp, content, attachments,
-                mentionedUsers, mentionedRoles, mentionedChanenls);
+                mentionedUsers, mentionedRoles, mentionedChannels);
         }
     }
 }

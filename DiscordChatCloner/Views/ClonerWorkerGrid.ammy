@@ -1,0 +1,71 @@
+﻿using MaterialDesignThemes.Wpf
+using MaterialDesignThemes.Wpf.Transitions
+
+UserControl "DiscordChatCloner.Views.ClonerWorkerGrid" {
+  DataGrid {
+    #DataGrid
+    IsReadOnly: true
+    ItemsSource: bind ClonerWorkers
+    Columns: [
+      DataGridTextColumn {
+        Header: "Name"
+        Binding: bind Cloner.Name
+      }
+      DataGridTextColumn {
+        Header: "From Guild"
+        Binding: bind Cloner.FromGuild
+      }
+      DataGridTextColumn {
+        Header: "From Channel"
+        Binding: bind Cloner.FromChannel
+      }
+      DataGridTextColumn {
+        Header: "To Guild"
+        Binding: bind Cloner.ToGuild
+      }
+      DataGridTextColumn {
+        Header: "To Channel"
+        Binding: bind Cloner.ToChannel
+      }
+      DataGridTemplateColumn {
+//        Header: "Play"
+        CellTemplate: [
+          DataTemplate {
+            @StackPanelHorizontal {
+              Button {
+                #DataGridButton
+                Command: bind DataContext.StartClonerCommand from $ancestor<ItemsControl>
+                CommandParameter: bind 
+                PackIcon {
+                  Kind: PackIconKind.Play
+                  Width: 16
+                  Height: 16
+                }
+              }
+              Button {
+                #DataGridButton
+
+                Command: bind StopClonerCommand
+                CommandParameter: bind 
+                PackIcon {
+                  Kind: PackIconKind.Pause
+                  Width: 16
+                  Height: 16
+                }
+              }
+              Button {
+                #DataGridButton
+                Command: bind DeleteClonerCommand
+                PackIcon {
+                  Kind: PackIconKind.Delete
+                  Width: 16
+                  Height: 16
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
