@@ -113,11 +113,9 @@
     <Compile Include="Models\ChannelType.cs" />
     <Compile Include="Models\Cloner.cs" />
     <Compile Include="Models\Extensions.cs" />
+    <Compile Include="Models\Payload.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\MessageType.cs" />
-    <Compile Include="NewFolder1\Window1.ammy.cs">
-      <DependentUpon>Window1.ammy</DependentUpon>
-    </Compile>
     <Compile Include="Services\CloneService.cs" />
     <Compile Include="Services\ICloneService.cs" />
     <Compile Include="Services\IMessageGroupService.cs" />
@@ -155,11 +153,6 @@
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
       <DependentUpon>App.ammy</DependentUpon>
-    </Page>
-    <Page Include="NewFolder1\Window1.g.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <DependentUpon>Window1.ammy</DependentUpon>
     </Page>
     <Page Include="Views\ClonerWorkerGrid.g.xaml">
       <SubType>Designer</SubType>
@@ -232,7 +225,6 @@
     </EmbeddedResource>
     <None Include="App.ammy" />
     <None Include="lib.ammy" />
-    <None Include="NewFolder1\Window1.ammy" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

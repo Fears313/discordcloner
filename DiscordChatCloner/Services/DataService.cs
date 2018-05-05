@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DiscordChatCloner.Exceptions;
 using DiscordChatCloner.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Tyrrrz.Extensions;
 
@@ -99,24 +101,26 @@ namespace DiscordChatCloner.Services
             return channels;
         }
 
-        public async Task<Object> PublishMessageAsync(string token, string channelId, Message message)
-        {
-            return await PublishStringAsync(token, channelId, message.Content);
-        }
 
-        public async Task<Object> PublishStringAsync(string token, string channelId, string messageString)
+
+
+        public async Task<Object> PublishMessageAsync(string token, string channelId, Message message)
         {
             // Form request url
             var url = $"{ApiRoot}/channels/{channelId}/messages?token={token}";
 
-            // TODO Set up content
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("content", messageString)
-            });
+            Attachment attachment = message.Attachments.DefaultIfEmpty(null).First();
+            Payload payload = new Payload(message.Content, attachment);
 
+            string jsonPayload = JsonConvert.SerializeObject(payload, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            Console.WriteLine("Posting the following... " + jsonPayload);
+
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
             return await PostStringAsync(url, content);
         }
+
+
+
 
         public async Task<IReadOnlyList<Channel>> GetGuildChannelsAsync(string token, string guildId)
         {
@@ -199,7 +203,7 @@ namespace DiscordChatCloner.Services
             while (true)
             {
                 // Form request url
-                var url = $"{ApiRoot}/channels/{channelId}/messages?token={token}&limit=100";
+                var url = $"{ApiRoot}/channels/{channelId}/messages?token={token}&limit=1";
 
                 if (afterId.IsNotBlank())
                 {
@@ -310,8 +314,7 @@ namespace DiscordChatCloner.Services
             return new Channel(id, name, type, lastMessageId);
         }
 
-        private static Message ParseMessage(JToken token,
-            IDictionary<string, Role> roles, IDictionary<string, Channel> channels)
+        private static Message ParseMessage(JToken token, IDictionary<string, Role> roles, IDictionary<string, Channel> channels)
         {
             // Get basic data
             var id = token.Value<string>("id");
@@ -374,8 +377,7 @@ namespace DiscordChatCloner.Services
                 .Select(i => channels.GetOrDefault(i) ?? new Channel(i, "deleted-channel", ChannelType.GuildTextChat, null))
                 .ToArray();
 
-            return new Message(id, author, timeStamp, editedTimeStamp, content, attachments,
-                mentionedUsers, mentionedRoles, mentionedChannels);
+            return new Message(id, author, timeStamp, editedTimeStamp, content, attachments, mentionedUsers, mentionedRoles, mentionedChannels);
         }
     }
 }

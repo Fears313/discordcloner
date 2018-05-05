@@ -27,7 +27,7 @@ namespace DiscordChatCloner.Services
 
                 foreach (var msg in messages) {
                     Console.WriteLine("[{0}] Cloning message {1}", cloner.Name, msg.Id);
-                    var newMessage = await _dataService.PublishStringAsync(token, cloner.ToChannel.Id, msg.Content);
+                    var newMessage = await _dataService.PublishMessageAsync(token, cloner.ToChannel.Id, msg);
                     cloner.LastClonedMessageId = msg.Id;
                 }
             };

@@ -20,6 +20,6 @@ namespace DiscordChatCloner.Services
 
 
         Task<Object> PublishMessageAsync(string token, string channelId, Message message);
-        Task<Object> PublishStringAsync(string token, string channelId, string message);
+//        Task<Object> PublishStringAsync(string token, string channelId, string message);
     }
 }
